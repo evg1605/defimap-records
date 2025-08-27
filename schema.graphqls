@@ -1,0 +1,938 @@
+directive @goModel(
+    model: String
+    models: [String!]
+    forceGenerate: Boolean
+) on OBJECT | INPUT_OBJECT | SCALAR | ENUM | INTERFACE | UNION
+
+directive @goField(
+    forceResolver: Boolean
+    name: String
+    omittable: Boolean
+) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
+
+# Unsigned 64-bit integer type for blockchain-specific values like block numbers
+scalar Uint64
+
+# User profile information with authentication details
+type UserProfile {
+    # Unique identifier for the user
+    id: String!
+    # Display name of the user
+    name: String!
+    # Email address of the user
+    email: String!
+    # URL to user's profile picture
+    picture: String
+    # Google OAuth identifier
+    googleId: String
+    # Telegram identifier
+    tgId: String
+    # Version number for optimistic locking
+    ver: Int!
+    # List of blockchain addresses associated with this user
+    accounts: [String!]! @goField(forceResolver: true)
+}
+
+# Blockchain block information with timestamp
+type BlockWithTime {
+    # Block number
+    block: Uint64!
+    # Human-readable timestamp (RFC3339 format)
+    time: String!
+    # Unix timestamp in seconds
+    unixTime: Uint64!
+}
+
+# Extended date information
+type DateEx {
+    # Date in YYYY-MM-DD format
+    date: String!
+    # Unix timestamp for the date (seconds since epoch)
+    unixDate: Uint64!
+}
+
+# Block information with associated date
+type BlockDate {
+    # Block number
+    block: Uint64!
+    # First block number for this date
+    firstBlockForDate: Uint64!
+    # Date in YYYY-MM-DD format
+    date: String!
+    # Unix timestamp for the date (seconds since epoch)
+    unixDate: Uint64!
+}
+
+# Statistical information about block times and dates
+type BlockTimesInfo{
+    # Earliest block with timestamp information
+    minBlockTime:BlockWithTime
+    # Latest block with timestamp information
+    maxBlockTime:BlockWithTime
+    # Total count of blocks with time information
+    countBlocksTime: Int!
+    # Earliest block with date information
+    minBlockDate: BlockDate
+    # Latest block with date information
+    maxBlockDate: BlockDate
+    # Total count of blocks with date information
+    countBlocksDate: Int!
+}
+
+# Exchange rate between a token and USD at a specific date
+type TokenUsdRate {
+    # Token contract address
+    tokenAddr: String!
+    # Token details
+    token: Token! @goField(forceResolver: true)
+    # Rate
+    rate: BaseUsdRate!
+}
+
+# Exchange rate between a token and USD at a specific date
+type BaseUsdRate {
+    # Date of the rate in YYYY-MM-DD format
+    date: String!
+    # Unix timestamp for the date (seconds since epoch)
+    unixDate: Uint64!
+    # Exchange rate (1 token = X USD)
+    rate: String!
+}
+
+# ERC20 token information
+type Token {
+    # Token contract address
+    addr: String!
+    # Full name of the token
+    name: String!
+    # Token symbol (e.g., ETH, USDC)
+    symbol: String!
+    # Number of decimal places for the token
+    decimals: Int!
+    # Block number when the token contract was created
+    contractBlock: Uint64!
+}
+
+# Uniswap V2 liquidity pair
+type V2Pair {
+    # Pair contract address
+    addr: String!
+    # Address of the first token in the pair
+    addr0: String!
+    # Address of the second token in the pair
+    addr1: String!
+    # Block number when the pair was created
+    contractBlock: Uint64!
+    # First token details
+    token0: Token! @goField(forceResolver: true)
+    # Second token details
+    token1: Token! @goField(forceResolver: true)
+}
+
+# Uniswap V3 liquidity pool
+type V3Pool {
+    # Pool contract address
+    addr: String!
+    # Address of the first token in the pool
+    addr0: String!
+    # Address of the second token in the pool
+    addr1: String!
+    # Block number when the pool was created
+    contractBlock: Uint64!
+    # Fee tier (in hundredths of a bip)
+    fee: Uint64!
+    # First token details
+    token0: Token! @goField(forceResolver: true)
+    # Second token details
+    token1: Token! @goField(forceResolver: true)
+}
+
+# Token amount with USD valuation
+type TokenFullAmount {
+    # Token contract address
+    tokenAddr: String!
+    # Token details
+    token: Token! @goField(forceResolver: true)
+    # Amount
+    amount: BaseFullAmount!
+}
+
+# Amount with USD valuation
+type BaseFullAmount {
+    # Amount in token units
+    amount: String!
+    # Amount value in USD
+    amountInUsd: String!
+}
+
+# Liquidity position state for a V2 pair at a specific block
+type LiqV2AddrPairState {
+    # Address of account holding the liquidity
+    addr: String!
+    # Pair contract address
+    pairAddr: String!
+    # Block number of the balance snapshot
+    balanceBlock: Uint64!
+    # Block date information
+    balanceBlockDate: BlockDate @goField(forceResolver: true)
+    # Index of this balance within the block
+    balanceIndInBlock: Int!
+    # Liquidity token balance
+    ltBalance: String!
+    # Block number of the reserves snapshot
+    reservesBlock: Uint64!
+    # Reserves block date information
+    reservesBlockDate: BlockDate @goField(forceResolver: true)
+    # Reserve amount of token0 in the pair
+    reserve0: String!
+    # Reserve amount of token1 in the pair
+    reserve1: String!
+    # Total supply of liquidity tokens
+    totalSupply: String!
+
+    # User's share of token0 in the pool
+    token0Amount: TokenFullAmount!
+    # User's share of token1 in the pool
+    token1Amount: TokenFullAmount!
+
+    # Total position value in USD
+    totalAmountInUsd: String!
+
+    # V2 pair details
+    pair: V2Pair! @goField(forceResolver: true)
+}
+
+# Balance of account in a specific ERC20 token
+type ErcAddrBalanceState {
+    # Address of account holding the token
+    addr: String!
+
+    # Token contract address
+    tokenAddr: String!
+
+    # Token details
+    token: Token! @goField(forceResolver: true)
+
+    # Amount of token
+    amount: TokenFullAmount!
+
+    # Block number of the balance snapshot
+    balanceBlock: Uint64!
+    # Block date information
+    balanceBlockDate: BlockDate @goField(forceResolver: true)
+    # Index of this balance within the block
+    balanceIndInBlock: Int!
+}
+
+# Eth balance of account
+type EthAddrBalanceState {
+    # Address of account holding the token
+    addr: String!
+    # Amount
+    amount: BaseFullAmount!
+
+    # Block number of the balance snapshot
+    balanceBlock: Uint64!
+    # Block date information
+    balanceBlockDate: BlockDate @goField(forceResolver: true)
+    # Index of this balance within the block
+    balanceIndInBlock: Int!
+    # Advanced index for ordering multiple changes
+    balanceAdvInd: Int!
+}
+
+# V2 liquidity change record (add/remove liquidity event)
+type LiqV2BalanceRecord {
+    # Address of the liquidity provider
+    addr: String!
+    # Pair contract address
+    pairAddr: String!
+    # Address of another party involved in the change (if any)
+    contrAddr: String!
+
+    # Hash of the transaction that changed the balance
+    txHash: String!
+    # Whether liquidity was added (true) or removed (false)
+    isIncrease: Boolean!
+
+    # Block number of the balance change
+    balanceBlock: Uint64!
+    # Block date information
+    balanceBlockDate: BlockDate @goField(forceResolver: true)
+    # Index of this change within the block
+    balanceIndInBlock: Int!
+    # Liquidity token balance after the change
+    ltBalance: String!
+    # Block number of the reserves snapshot
+    reservesBlock: Uint64!
+    # Reserves block date information
+    reservesBlockDate: BlockDate @goField(forceResolver: true)
+    # Reserve amount of token0 after the change
+    reserve0: String!
+    # Reserve amount of token1 after the change
+    reserve1: String!
+    # Total supply of liquidity tokens after the change
+    totalSupply: String!
+
+    # User's share of token0 after the change
+    token0Amount: TokenFullAmount!
+    # User's share of token1 after the change
+    token1Amount: TokenFullAmount!
+    # Total position value in USD after the change
+    totalAmountInUsd: String!
+
+    # Change in token0 amount
+    token0Delta: TokenFullAmount!
+    # Change in token1 amount
+    token1Delta: TokenFullAmount!
+
+    # Change in liquidity tokens
+    ltDelta: String!
+
+    # USD exchange rate for token0 at the time
+    token0UsdRate: TokenUsdRate!
+    # USD exchange rate for token1 at the time
+    token1UsdRate: TokenUsdRate!
+
+    # Reason for the change (e.g., "mint", "burn")
+    reason: String!
+
+    # V2 pair details
+    pair: V2Pair! @goField(forceResolver: true)
+}
+
+# Record for account eth balance changes
+type AccEthBalanceRecord {
+    # Address of the account holding the eth
+    addr: String!
+    # Address of another party involved in the change (if any)
+    contrAddr: String!
+
+    # Hash of the transaction that changed the balance
+    txHash: String!
+    # Block where the balance change occurred
+    block: Uint64!
+    # Date of block when the change occurred
+    blockDate: BlockDate @goField(forceResolver: true)
+    # Index of this change within the block
+    indInBlock: Int!
+    # Advanced index for ordering multiple changes
+    advInd: Int!
+    # Is change was due to internal transaction
+    isInternalTx: Boolean!
+    # Trace id for internal transaction (if any)
+    traceId: String!
+
+    # Whether liquidity was added (true) or removed (false)
+    isIncrease: Boolean!
+
+    # Total amount
+    totalAmount: BaseFullAmount!
+    # Delta amount
+    deltaAmount: BaseFullAmount!
+    # Fee amount (if any) -  its part of deltaAmount, deltaAmount includes fee
+    feeAmount: BaseFullAmount!
+
+    # Rate
+    rate: BaseUsdRate!
+
+    # Reason for the change (init,received,transferred)
+    reason: String!
+}
+
+# Record for account ERC20 token balance changes
+type AccErcBalanceRecord {
+    # Address of the account holding the token
+    addr: String!
+    # Token contract address
+    tokenAddr: String!
+    # Address of another party involved in the change (if any)
+    contrAddr: String!
+
+    # Hash of the transaction that changed the balance
+    txHash: String!
+    # Block where the balance change occurred
+    block: Uint64!
+    # Date of block when the change occurred
+    blockDate: BlockDate @goField(forceResolver: true)
+    # Index of this change within the block
+    indInBlock: Int!
+    # Advanced index for ordering multiple changes
+    advInd: Int!
+
+    # Whether liquidity was added (true) or removed (false)
+    isIncrease: Boolean!
+
+    # Amount of the token after the change
+    tokenAmount: TokenFullAmount!
+    # Amount of the token by which the balance changed
+    tokenDeltaAmount: TokenFullAmount!
+    # USD exchange rate for token at the time
+    tokenUsdRate: TokenUsdRate!
+
+    # Reason for the change (init,received,transferred,deposited,withdrawn)
+    reason: String!
+
+    # Token details
+    token: Token! @goField(forceResolver: true)
+}
+
+# V3 liquidity change record (position modification event)
+type LiqV3BalanceRecord {
+    # Address of the liquidity provider
+    addr: String!
+
+    # V3 pool details
+    pool: V3Pool! @goField(forceResolver: true)
+    # NFT position token ID
+    tokenId: String!
+    # Pool contract address
+    poolAddr: String!
+
+    # Address of another party involved in the change (if any)
+    contrAddr: String!
+    # Hash of the transaction that changed the balance
+    txHash: String!
+    # Block number of the change
+    block: Uint64!
+    # Index of this change within the block
+    indInBlock: Int!
+    # Advanced index for ordering multiple changes
+    advInd: Int!
+    # Whether liquidity was added (true) or removed (false)
+    isIncrease: Boolean!
+
+    # Change in token0 amount
+    token0Delta: TokenFullAmount!
+    # Change in token1 amount
+    token1Delta: TokenFullAmount!
+    # Change in uncollected token0 fees
+    tokensOwed0Delta: TokenFullAmount!
+    # Change in uncollected token1 fees
+    tokensOwed1Delta: TokenFullAmount!
+
+    # Change in liquidity units
+    ltDelta: String!
+
+    # Whether the position no longer exists
+    notExist: Boolean!
+
+    # Reason for the change (e.g., "increaseLiquidity", "decreaseLiquidity")
+    reason: String!
+
+    # NFT position state after the change
+    nft:UnionV3NFTState @goField(forceResolver: true)
+
+    # Block date information
+    blockDate: BlockDate @goField(forceResolver: true)
+}
+
+# V3 pool state at a specific point in time
+type LiqV3PoolState {
+    # Historical sync point date
+    hSyncPointDate: DateEx!
+    # V3 pool details
+    pool: V3Pool! @goField(forceResolver: true)
+    # Historical point block number
+    hPointBlock: Uint64!
+    # Historical point block date
+    hPointBlockDate: BlockDate @goField(forceResolver: true)
+    # Pool contract address
+    poolAddr: String!
+    # Global fee growth for token0 (Q128 fixed point)
+    feeGrowthGlobal0X128:String!
+    # Global fee growth for token1 (Q128 fixed point)
+    feeGrowthGlobal1X128:String!
+    # Current sqrt price (Q96 fixed point)
+    sqrtPriceX96   :String!
+    # Current tick
+    tick                 : Int!
+}
+
+# V3 pool tick state at a specific point in time
+type LiqV3PoolTickState {
+    # Historical sync point date
+    hSyncPointDate: DateEx!
+
+    # V3 pool details
+    pool: V3Pool! @goField(forceResolver: true)
+    # Block number of the tick state
+    block: Uint64!
+    # Block date information
+    blockDate: BlockDate @goField(forceResolver: true)
+    # Pool contract address
+    poolAddr: String!
+
+    # Tick index
+    tick : Int!
+    # Total liquidity referencing this tick
+    liquidityGross : String!
+    # Net liquidity change when crossing this tick
+    liquidityNet : String!
+    # Fee growth on the other side of this tick for token0 (Q128)
+    feeGrowthOutside0X128 : String!
+    # Fee growth on the other side of this tick for token1 (Q128)
+    feeGrowthOutside1X128 : String!
+    # Cumulative tick value on the other side of this tick
+    tickCumulativeOutside : String!
+    # Seconds spent per liquidity on the other side of this tick (Q128)
+    secondsPerLiquidityOutsideX128 : String!
+    # Seconds spent on the other side of this tick
+    secondsOutside : Int!
+}
+
+# Union type for V3 NFT position states (active or burned)
+union UnionV3NFTState = LiqV3NFTState | LiqV3NFTBurnedState
+
+# Burned V3 NFT position state
+type LiqV3NFTBurnedState {
+    # Historical sync point date
+    hSyncPointDate: DateEx!
+
+    # NFT position token ID
+    tokenId: String!
+
+    # Block when the NFT was burned
+    hPointBlock: Uint64!
+    # Block date when the NFT was burned
+    hPointBlockDate: BlockDate @goField(forceResolver: true)
+}
+
+# Active V3 NFT position state with full details
+type LiqV3NFTState {
+    # Historical sync point date
+    hSyncPointDate: DateEx!
+
+    # USD exchange rate for token0
+    token0UsdRate: TokenUsdRate!
+    # USD exchange rate for token1
+    token1UsdRate: TokenUsdRate!
+
+    # Historical point block number
+    hPointBlock: Uint64!
+    # Historical point block date
+    hPointBlockDate: BlockDate @goField(forceResolver: true)
+
+    # V3 pool details
+    pool: V3Pool! @goField(forceResolver: true)
+    # NFT position token ID
+    tokenId: String!
+    # Pool contract address
+    poolAddr: String!
+    # Upper tick boundary of the position
+    positionTickUpper: String!
+    # Lower tick boundary of the position
+    positionTickLower: String!
+
+    # Total liquidity in the position
+    ltTotal             :  String!
+    # Last recorded fee growth inside the position for token0 (Q128)
+    feeGrowthInside0LastX128 : String!
+    # Last recorded fee growth inside the position for token1 (Q128)
+    feeGrowthInside1LastX128 : String!
+    # Total uncollected fees for token0
+    tokensOwed0Total: TokenFullAmount!
+    # Total uncollected fees for token1
+    tokensOwed1Total: TokenFullAmount!
+
+    # Total token0 amount in the position
+    token0Total: TokenFullAmount!
+    # Total token1 amount in the position
+    token1Total: TokenFullAmount!
+    # Total position value in USD
+    totalAmountInUsd: String!
+
+    # Current pool state
+    poolState: LiqV3PoolState!
+    # Upper tick boundary state
+    tickUpperState: LiqV3PoolTickState!
+    # Lower tick boundary state
+    tickLowerState: LiqV3PoolTickState!
+}
+
+# V3 NFT position state with owner information
+type LiqV3AddrNFTState   {
+    # NFT position details
+    nft: LiqV3NFTState!
+    # Address of the NFT owner
+    ownerAddr: String!
+}
+
+# Latest balance snapshot for a user profile
+type ProfileLastBalance {
+    # Block number of the balance snapshot
+    pointBlock: Uint64!
+    # Block date of the balance snapshot
+    pointBlockDate: BlockDate @goField(forceResolver: true)
+
+    # Token USD exchange rates at the snapshot time
+    rates: [TokenUsdRate!]!
+    # V2 liquidity positions
+    v2pairsBalances:[LiqV2AddrPairState!]!
+    # V3 NFT positions
+    v3nftsBalances:[LiqV3AddrNFTState!]!
+    # ERC20 token balances
+    ercsBalances:[ErcAddrBalanceState!]!
+    # Ethereum balances
+    ethBalances:[EthAddrBalanceState!]!
+}
+
+# Liquidity change records for a user profile within a time range
+type ProfileRecords {
+    # Starting block number of the range
+    fromBlock: Uint64!
+    # Ending block number of the range
+    toBlock: Uint64!
+    # Starting block date
+    fromBlockDate: BlockDate @goField(forceResolver: true)
+    # Ending block date
+    toBlockDate: BlockDate @goField(forceResolver: true)
+
+    # List of liquidity changes (V2 and V3)
+    records: [LiqBalanceRecord!]!
+}
+
+# Union type for liquidity balance records (eth or erc or V2 or V3)
+union LiqBalanceRecord = AccEthBalanceRecord |AccErcBalanceRecord | LiqV2BalanceRecord | LiqV3BalanceRecord
+
+# Event synchronization state for an address
+type AddrPullEventsState {
+    # Contract address being synchronized
+    addr: String!
+    # Last synchronized block number
+    block: Uint64!
+    # Last synchronized block date
+    date: BlockDate @goField(forceResolver: true)
+}
+
+# V2 pair event synchronization state
+type V2PairPullEventsState {
+    # Synchronization state
+    state: AddrPullEventsState!
+    # V2 pair details
+    pair: V2Pair! @goField(forceResolver: true)
+}
+
+
+
+# V3 pool event synchronization state
+type V3PoolPullEventsState {
+    # Synchronization state
+    state: AddrPullEventsState!
+    # V3 pool details
+    pool: V3Pool! @goField(forceResolver: true)
+}
+
+# V3 NFT manager event synchronization state
+type V3NFTMngPullEventsState {
+    # Synchronization state
+    state: AddrPullEventsState!
+}
+
+# Aggregated event synchronization state for multiple addresses
+type AddrsPullEventsState {
+    # V3 NFT manager synchronization state
+    v3nftMng: V3NFTMngPullEventsState
+    # V2 pairs synchronization states
+    v2pairs: [V2PairPullEventsState!]!
+    # V3 pools synchronization states
+    v3pools: [V3PoolPullEventsState!]!
+    # accounts-tokens synchronization states
+    accsErcs: [AddrPullEventsState!]!
+}
+
+# Background task execution state
+type TaskState {
+    # Task name identifier
+    name: String!
+    # Current processing block number
+    currentProgressBlock: Uint64!
+    # Whether the task depends on blockchain data
+    dependOnChain: Boolean!
+    # Date of the current progress
+    date: BlockDate @goField(forceResolver: true)
+}
+
+# Impermanent loss calculation results
+type ImpLosses {
+    # Block number of the calculation
+    pointBlock: Uint64!
+    # Block date of the calculation
+    pointBlockDate: BlockDate @goField(forceResolver: true)
+
+    # V2 impermanent losses
+    v2Losses: [V2ImpLoss!]!
+    # V3 impermanent losses
+    v3Losses: [V3ImpLoss!]!
+}
+
+# V2 pair impermanent loss
+type V2ImpLoss {
+    # Pair contract address
+    pairAddr: String!
+    # V2 pair details
+    pair: V2Pair! @goField(forceResolver: true)
+    # Impermanent loss percentage (negative values indicate loss)
+    il: String!
+}
+
+# V3 pool impermanent loss
+type V3ImpLoss {
+    # Pool contract address
+    poolAddr: String!
+    # V3 pool details
+    pool: V3Pool! @goField(forceResolver: true)
+    # Impermanent loss percentage (negative values indicate loss)
+    il: String!
+}
+
+# Input for querying USD rate on a specific date
+input UsdRateDateArg {
+    # Token contract address
+    addr: String!
+    # Date in YYYY-MM-DD format
+    date: String!
+}
+
+# Input for querying V3 NFT state on a specific date
+input V3NFTStateDateArg {
+    # NFT position token ID
+    tokenId: String!
+    # Date in YYYY-MM-DD format
+    date: String!
+}
+
+# Input for querying V3 NFT state at a specific block
+input V3NFTStateBlockArg {
+    # NFT position token ID
+    tokenId: String!
+    # Block number
+    block: Uint64!
+}
+
+# Profit and loss calculations for a time period
+type Pnls {
+    # Starting block of the calculation period
+    fromBlock: Uint64!
+    # Starting block date
+    fromBlockDate: BlockDate @goField(forceResolver: true)
+
+    # Ending block of the calculation period
+    toBlock: Uint64!
+    # Ending block date
+    toBlockDate: BlockDate @goField(forceResolver: true)
+
+    # Minimum synchronized block in the data
+    minSyncBlock: Uint64!
+    # Minimum synchronized date
+    minSyncDate: DateEx!
+
+    # Maximum synchronized block in the data
+    maxSyncBlock: Uint64!
+    # Maximum synchronized date
+    maxSyncDate: DateEx!
+
+    # V2 profit and loss details
+    v2Pnls: V2Pnl
+    # V3 profit and loss details
+    v3Pnls: V3Pnl
+    # Total aggregated profit and loss
+    totalPnl: PnlAggregated!
+}
+
+# V2 profit and loss details
+type V2Pnl {
+    # Individual pair profit and loss
+    pairsPnls: [V2PairPnl!]!
+    # Total V2 profit and loss
+    totalPnl: PnlAggregated!
+}
+
+# V2 pair-specific profit and loss
+type V2PairPnl {
+    # Pair contract address
+    pairAddr: String!
+    # V2 pair details
+    pair: V2Pair! @goField(forceResolver: true)
+    # Position profit and loss details
+    pnl: PositionPnl!
+}
+
+# V3 profit and loss details
+type V3Pnl {
+    # Individual NFT position profit and loss
+    nftPnls:[V3NFTPnl!]!
+    # Aggregated pool profit and loss
+    poolsPnls:[V3PoolPnl!]!
+    # Total V3 profit and loss
+    totalPnl: PnlAggregated!
+}
+
+# V3 pool-aggregated profit and loss
+type V3PoolPnl {
+    # Pool contract address
+    poolAddr: String!
+    # V3 pool details
+    pool: V3Pool! @goField(forceResolver: true)
+
+    # Aggregated profit and loss for the pool
+    pnl:PnlAggregated!
+}
+
+# V3 NFT position-specific profit and loss
+type V3NFTPnl {
+    # NFT position token ID
+    tokenId: String!
+    # Pool contract address
+    poolAddr: String!
+    # V3 pool details
+    pool: V3Pool! @goField(forceResolver: true)
+
+    # Position profit and loss details
+    pnl: PositionPnl!
+}
+
+# Aggregated profit and loss summary
+type PnlAggregated {
+    # Total amount invested in USD
+    totalInvestedUsd: String!
+    # Total amount withdrawn in USD
+    totalWithdrawnUsd: String!
+    # Profit/loss in USD
+    pnlUsd: String!
+    # Profit/loss percentage
+    pnl: String!
+    # Token-specific balance information
+    tokenBalances:[PnlTokenBalance!]!
+}
+
+# Token-specific balance information for PnL calculations
+type PnlTokenBalance  {
+    # Token contract address
+    tokenAddr: String!
+    # Token details
+    token: Token! @goField(forceResolver: true)
+
+    # Amount invested (in token units)
+    investedAmount: String!
+    # Amount withdrawn (in token units)
+    withdrawnAmount: String!
+    # Total invested value in this token
+    totalInvestedInToken: String!
+    # Total withdrawn value in this token
+    totalWithdrawnInToken: String!
+}
+
+# Detailed position-level profit and loss
+type PositionPnl{
+    # Amount of token0 invested
+    investedToken0: String!
+    # Amount of token1 invested
+    investedToken1: String!
+
+    # Value invested denominated in token0
+    investedInToken0: String!
+    # Value invested denominated in token1
+    investedInToken1: String!
+    # Total invested value in USD
+    investedInUsd: String!
+
+    # Amount of token0 withdrawn
+    withdrawnToken0: String!
+    # Amount of token1 withdrawn
+    withdrawnToken1: String!
+
+    # Value withdrawn denominated in token0
+    withdrawnInToken0: String!
+    # Value withdrawn denominated in token1
+    withdrawnInToken1: String!
+    # Total withdrawn value in USD
+    withdrawnInUsd: String!
+
+    # Profit/loss in token0 terms
+    pnlToken0: String!
+    # Profit/loss in token1 terms
+    pnlToken1: String!
+    # Profit/loss in USD
+    pnlUsd: String!
+    # Profit/loss percentage
+    pnl: String!
+}
+
+type Query {
+    # Get current user profile (requires authentication)
+    profile: UserProfile!
+
+    # Calculate profit and loss for a date range
+    # fromDate: Starting date in YYYY-MM-DD format
+    # toDate: Ending date in YYYY-MM-DD format (optional, defaults to latest)
+    # addrs: Filter by wallet addresses (optional)
+    # v2PairsAddrs: Filter by V2 pair addresses (optional)
+    # v3PoolsAddrs: Filter by V3 pool addresses (optional)
+    pnls(fromDate: String!, toDate:String, addrs: [String!] = [],v2PairsAddrs :[String!] = [],v3PoolsAddrs :[String!] = []): Pnls!
+
+    # Calculate impermanent losses up to a specific date
+    # toDate: Calculate up to this date (optional, defaults to latest)
+    # addrs: Filter by wallet addresses (optional)
+    # v2PairsAddrs: Filter by V2 pair addresses (optional)
+    # v3PoolsAddrs: Filter by V3 pool addresses (optional)
+    impLosses(toDate:String, addrs: [String!] = [],v2PairsAddrs :[String!] = [],v3PoolsAddrs :[String!] = []):ImpLosses!
+
+    # Get latest balance snapshot for user profile
+    # addrs: Filter by wallet addresses (optional)
+    # v2PairsAddrs: Filter by V2 pair addresses (optional)
+    # v3PoolsAddrs: Filter by V3 pool addresses (optional)
+    profileLastBalance(addrs: [String!] = [],v2PairsAddrs :[String!] = [],v3PoolsAddrs :[String!] = []):ProfileLastBalance!
+
+    # Get liquidity change records for a date range
+    # fromDate: Starting date in YYYY-MM-DD format
+    # toDate: Ending date in YYYY-MM-DD format (optional)
+    # addrs: Filter by wallet addresses (optional)
+    # v2PairsAddrs: Filter by V2 pair addresses (optional)
+    # v3PoolsAddrs: Filter by V3 pool addresses (optional)
+    profileRecords(fromDate: String!, toDate:String,addrs: [String!] = [],v2PairsAddrs :[String!] = [],v3PoolsAddrs :[String!] = []):ProfileRecords!
+
+    # Get USD exchange rates for tokens on specific dates
+    # args: List of token address and date pairs
+    usdRates(args: [UsdRateDateArg!]!): [TokenUsdRate]!
+
+    # Get V3 NFT states on specific dates
+    # args: List of NFT token ID and date pairs
+    v3nftStates(args: [V3NFTStateDateArg!]!): [UnionV3NFTState]!
+
+    # Get V3 NFT states at specific blocks
+    # args: List of NFT token ID and block pairs
+    v3nftStatesInChain(args: [V3NFTStateBlockArg!]!): [UnionV3NFTState]!
+
+    # Get all V2 pairs
+    v2pairs: [V2Pair!]!
+
+    # Get all V3 pools
+    v3pools: [V3Pool!]!
+
+    # Convert block numbers to dates
+    # blocks: List of block numbers
+    blockDates(blocks: [Uint64!]!): [BlockDate!]!
+
+    # Get statistical information about block times
+    blockTimesInfo: BlockTimesInfo!
+
+    # Get event synchronization state
+    # addrs: Filter by addresses for which event pooling is performed (defaults to all)
+    pullEventsState(addrs: [String!] = []): AddrsPullEventsState!
+
+    # Get background task states
+    tasksStates: [TaskState!]!
+}
+
+type Mutation {
+    # Add blockchain addresses to user's account list
+    # addrs: List of addresses to add
+    addUserAccounts(addrs: [String!]!):Boolean!
+
+    # Remove blockchain addresses from user's account list
+    # addrs: List of addresses to remove
+    removeUserAccounts(addrs: [String!]!):Boolean!
+}
+
+

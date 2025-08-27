@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeFi Analytics</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Loading/Error Display -->
+        <div id="status-panel" class="status-panel">
+            <div class="loading">
+                <div class="spinner"></div>
+                <span>Loading data...</span>
+            </div>
+            <div class="error hidden">
+                <span class="error-message"></span>
+                <button class="btn-retry">Retry</button>
+            </div>
+        </div>
+
+        <!-- Main Interface (hidden initially) -->
+        <div id="main-interface" class="hidden">
+            <!-- Header/Filter Panel -->
+            <header class="filter-panel">
+                <div class="filter-section">
+                    <label for="date-filter">Date</label>
+                    <input type="date" id="date-filter" class="filter-input">
+                </div>
+                
+                <div class="filter-section">
+                    <label>Accounts</label>
+                    <div id="accounts-filter" class="multi-select">
+                        <div class="multi-select-header">
+                            <span class="placeholder">Select accounts...</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="multi-select-dropdown" id="accounts-dropdown"></div>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <label>V2 Pairs</label>
+                    <div id="v2pairs-filter" class="multi-select">
+                        <div class="multi-select-header">
+                            <span class="placeholder">Select V2 pairs...</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="multi-select-dropdown" id="v2pairs-dropdown"></div>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <label>V3 Pools</label>
+                    <div id="v3pools-filter" class="multi-select">
+                        <div class="multi-select-header">
+                            <span class="placeholder">Select V3 pools...</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="multi-select-dropdown" id="v3pools-dropdown"></div>
+                    </div>
+                </div>
+                
+                <button id="run-query" class="btn-primary">Run Query</button>
+            </header>
+
+            <!-- Records Panel (placeholder for now) -->
+            <main id="records-panel" class="records-panel">
+                <!-- Records will be displayed here -->
+            </main>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="filters.js"></script>
+    <script src="records.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
