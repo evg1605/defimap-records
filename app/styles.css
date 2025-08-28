@@ -832,6 +832,16 @@ body {
     text-decoration: underline;
 }
 
+.token-id-link {
+    color: #1976d2;
+    text-decoration: none;
+    font-size: 13.2px;
+}
+
+.token-id-link:hover {
+    text-decoration: underline;
+}
+
 .nft-burned {
     color: #c62828;
     font-weight: 600;

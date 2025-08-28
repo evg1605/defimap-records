@@ -66,6 +66,7 @@ rate для 0 и 1 токенов - брать из token0UsdRate и token1UsdRa
 данные nft токена:
 подзаголовок NFT state
 независимо от типа поля nft:
+token id: tokenId, сделать его кликабельной ссылкой с переходом в новый tab на https://opensea.io/item/ethereum/0xC36442b4a4522E871399CD717aBDD847Ab11FE88/[tokenId] - вот пример https://opensea.io/item/ethereum/0xC36442b4a4522E871399CD717aBDD847Ab11FE88/12345
 hSyncPointDate.date (дату и время если есть)
 block: hPointBlock (в формате #номер блока - https://etherscan.io/block/[номер блока] , вот
 пример https://etherscan.io/block/13745261)

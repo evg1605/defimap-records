@@ -775,6 +775,7 @@ class RecordsManager {
         if (!nft) return '';
         
         const nftType = nft.__typename;
+        const tokenId = nft.tokenId || '';
         const hSyncPointDate = nft.hSyncPointDate || {};
         const dateTime = hSyncPointDate.date || '';
         const hPointBlock = nft.hPointBlock || '';
@@ -784,6 +785,7 @@ class RecordsManager {
         html += `
             <div class="nft-header">
                 <span class="nft-title">NFT state</span>
+                ${tokenId ? `<a href="https://opensea.io/item/ethereum/0xC36442b4a4522E871399CD717aBDD847Ab11FE88/${tokenId}" target="_blank" rel="noopener noreferrer" class="token-id-link">token id: ${tokenId}</a>` : ''}
                 ${dateTime ? `<span class="nft-date">${dateTime}</span>` : ''}
                 <a href="https://etherscan.io/block/${hPointBlock}" target="_blank" rel="noopener noreferrer" class="block-link">
                     #${hPointBlock}
