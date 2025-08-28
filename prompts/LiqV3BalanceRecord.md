@@ -60,8 +60,7 @@ tokensOwed1Delta.amount.amountInUsd
 USD) (цвет зеленый, красный или черный в зависимости от reason),
 
 ниже
-rate для 0 и 1 токенов - брать из nft (только в случае если nft имеет тип LiqV3NFTState) поле token0UsdRate.rate.rate и
-token1UsdRate.rate.rate, отображать как symbolOfToken0/USD и symbolOfToken1/USD
+rate для 0 и 1 токенов - брать из token0UsdRate и token1UsdRate, отображать как symbolOfToken0/USD и symbolOfToken1/USD
 
 ниже
 данные nft токена:

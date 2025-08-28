@@ -411,6 +411,11 @@ type LiqV3BalanceRecord {
     # Change in uncollected token1 fees
     tokensOwed1Delta: TokenFullAmount!
 
+    # USD exchange rate for token0 at the time
+    token0UsdRate: TokenUsdRate!
+    # USD exchange rate for token1 at the time
+    token1UsdRate: TokenUsdRate!
+
     # Change in liquidity units
     ltDelta: String!
 
