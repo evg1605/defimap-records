@@ -14,6 +14,7 @@
       usdt/weth-0.3%-0x0f444D2C88
 - 0xC36442b4a4522E871399CD717aBDD847Ab11FE88 - менеджер токенов v3 отображать как v3NFTMng-0xC36442b4a
 - 0x66a9893cC07D91D95644AEDD05D03f95e1dBA8Af - uniswap v4 router - отображать как v4Router-0x66a9893c
+- 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D - uniswap v2 router - отображать как v2Router-0x7a250d56
 - Не совпало ни с чем - показываем первые 10 знаков адреса 0x0f444D2C88 - background color - вариант серого цвета (
   светлый), сам адрес - чёрным
 
