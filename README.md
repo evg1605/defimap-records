@@ -12,4 +12,5 @@ npm install --global surge
 
 ```
 surge
+surge ./ defimap-myrecords.surge.sh
 ```
