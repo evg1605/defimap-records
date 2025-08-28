@@ -567,6 +567,32 @@ const queries = {
                             date
                             unixDate
                         }
+                        token0UsdRate {
+                            tokenAddr
+                            token {
+                                addr
+                                symbol
+                                name
+                            }
+                            rate {
+                                date
+                                unixDate
+                                rate
+                            }
+                        }
+                        token1UsdRate {
+                            tokenAddr
+                            token {
+                                addr
+                                symbol
+                                name
+                            }
+                            rate {
+                                date
+                                unixDate
+                                rate
+                            }
+                        }
                         nft {
                             __typename
                             ... on LiqV3NFTBurnedState {

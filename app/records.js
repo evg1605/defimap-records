@@ -596,6 +596,19 @@ class RecordsManager {
                     </div>
         `;
         
+        // Add rates from the record (not from NFT)
+        const token0Rate = record.token0UsdRate && record.token0UsdRate.rate ? 
+            parseFloat(record.token0UsdRate.rate.rate).toFixed(4) : '0.0000';
+        const token1Rate = record.token1UsdRate && record.token1UsdRate.rate ? 
+            parseFloat(record.token1UsdRate.rate.rate).toFixed(4) : '0.0000';
+        
+        html += `
+                    <div class="rates-line">
+                        <span class="rate">${token0Symbol}/USD: ${token0Rate}</span>
+                        <span class="rate">${token1Symbol}/USD: ${token1Rate}</span>
+                    </div>
+        `;
+        
         // Add NFT state if present
         if (record.nft) {
             html += this.renderV3NFTState(record.nft, token0Symbol, token1Symbol, colorClass);
@@ -767,19 +780,6 @@ class RecordsManager {
         const hPointBlock = nft.hPointBlock || '';
         
         let html = `<div class="nft-state-section">`;
-        
-        // Add rates if this is a full NFT state
-        if (nftType === 'LiqV3NFTState' && nft.token0UsdRate && nft.token1UsdRate) {
-            const token0Rate = nft.token0UsdRate.rate ? parseFloat(nft.token0UsdRate.rate.rate).toFixed(4) : '0.0000';
-            const token1Rate = nft.token1UsdRate.rate ? parseFloat(nft.token1UsdRate.rate.rate).toFixed(4) : '0.0000';
-            
-            html += `
-                <div class="rates-line">
-                    <span class="rate">${token0Symbol}/USD: ${token0Rate}</span>
-                    <span class="rate">${token1Symbol}/USD: ${token1Rate}</span>
-                </div>
-            `;
-        }
         
         html += `
             <div class="nft-header">
