@@ -56,6 +56,11 @@ class AddressResolver {
             return `<a href="https://etherscan.io/address/${address}" target="_blank" rel="noopener noreferrer" class="address-link v4router" title="${address}">v4Router-0x66a9893c</a>`;
         }
         
+        // Check if it's V2 Router
+        if (addrLower === '0x7a250d5630b4cf539739df2c5dacb4c659f2488d') {
+            return `<a href="https://etherscan.io/address/${address}" target="_blank" rel="noopener noreferrer" class="address-link v2router" title="${address}">v2Router-0x7a250d56</a>`;
+        }
+        
         // Check if it's WETH contract
         if (addrLower === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2') {
             return `<a href="https://etherscan.io/address/${address}" target="_blank" rel="noopener noreferrer" class="address-link token" title="${address}">WETH-${shortAddr}</a>`;

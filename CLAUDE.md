@@ -31,4 +31,4 @@ run vite inside ./app directory
 when load records choose before from accounts - w11 and w9 - these accounts have records with different kinds and
 reasons - good for tests and not too many records
 
-after done task - close-stop vite server and close chrome browser
+after done task - close-stop vite server
