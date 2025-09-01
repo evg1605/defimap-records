@@ -301,6 +301,13 @@ type LiqV2BalanceRecord {
     pair: V2Pair! @goField(forceResolver: true)
 }
 
+scalar JSON
+
+type EthMethodParameter {
+    name: String!
+    value: JSON
+}
+
 # Record for account eth balance changes
 type AccEthBalanceRecord {
     # Address of the account holding the eth
@@ -338,6 +345,10 @@ type AccEthBalanceRecord {
 
     # Reason for the change (init,received,transferred)
     reason: String!
+
+    contractName: String
+    method: String
+    params: [EthMethodParameter!]
 }
 
 # Record for account ERC20 token balance changes
