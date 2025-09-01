@@ -374,6 +374,12 @@ const queries = {
                             rate
                         }
                         reason
+                        contractName
+                        method
+                        params {
+                            name
+                            value
+                        }
                     }
                     ... on AccErcBalanceRecord {
                         addr
