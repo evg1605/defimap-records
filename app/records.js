@@ -943,12 +943,27 @@ class RecordsManager {
         if (!params) return '{}';
         
         try {
-            // Try to parse as JSON and format nicely
-            const parsed = JSON.parse(params);
-            return JSON.stringify(parsed, null, 2);
+            // If params is already an object or array, stringify it directly
+            if (typeof params === 'object') {
+                return JSON.stringify(params, null, 2);
+            }
+            
+            // If it's a string, try to parse it first
+            if (typeof params === 'string') {
+                const parsed = JSON.parse(params);
+                return JSON.stringify(parsed, null, 2);
+            }
+            
+            // For other types, stringify as is
+            return JSON.stringify(params, null, 2);
         } catch (error) {
-            // If it's not valid JSON, return as is
-            return params;
+            // If parsing fails, try to stringify the original value
+            try {
+                return JSON.stringify(params, null, 2);
+            } catch (error2) {
+                // If all else fails, return as string
+                return String(params);
+            }
         }
     }
 
