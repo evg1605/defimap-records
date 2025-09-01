@@ -90,17 +90,13 @@ class FilterManager {
         mainInterface.classList.add('hidden');
         
         try {
-            // Load all data in parallel
-            const [profileData, v2pairsData, v3poolsData] = await Promise.all([
-                api.query(queries.profile),
-                api.query(queries.v2pairs),
-                api.query(queries.v3pools)
-            ]);
+            // Load all data in a single request
+            const data = await api.query(queries.initData);
             
             // Process and store data
-            this.data.accounts = profileData.profile.accounts || [];
-            this.data.v2pairs = v2pairsData.v2pairs || [];
-            this.data.v3pools = v3poolsData.v3pools || [];
+            this.data.accounts = data.profile.accounts || [];
+            this.data.v2pairs = data.v2pairs || [];
+            this.data.v3pools = data.v3pools || [];
             
             // Populate dropdowns
             this.populateAccountsDropdown();

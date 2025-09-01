@@ -1,6 +1,6 @@
 // AI - don't change apiUrl value, it's used to switch between local and production server
-const apiUrl = 'https://defi-map.com/api/api/gql/query';
-// const apiUrl = 'http://localhost:8090/api/gql/query';
+//const apiUrl = 'https://defi-map.com/api/api/gql/query';
+const apiUrl = 'http://localhost:8090/api/gql/query';
 
 // Google Identity Services configuration
 const googleConfig = {
@@ -302,6 +302,55 @@ const queries = {
 
     v3pools: `
         query GetV3Pools {
+            v3pools {
+                addr
+                addr0
+                addr1
+                contractBlock
+                fee
+                token0 {
+                    addr
+                    name
+                    symbol
+                    decimals
+                }
+                token1 {
+                    addr
+                    name
+                    symbol
+                    decimals
+                }
+            }
+        }
+    `,
+
+    // Combined query for initialization data
+    initData: `
+        query GetInitData {
+            profile {
+                id
+                name
+                email
+                accounts
+            }
+            v2pairs {
+                addr
+                addr0
+                addr1
+                contractBlock
+                token0 {
+                    addr
+                    name
+                    symbol
+                    decimals
+                }
+                token1 {
+                    addr
+                    name
+                    symbol
+                    decimals
+                }
+            }
             v3pools {
                 addr
                 addr0
