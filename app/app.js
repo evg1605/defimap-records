@@ -76,6 +76,19 @@ function toggleParamsPopup(recordId) {
     const popup = document.getElementById(`params-popup-${recordId}`);
     if (!popup) return;
     
+    // Close any other open popups first
+    document.querySelectorAll('.params-popup[style*="block"]').forEach(otherPopup => {
+        if (otherPopup.id !== `params-popup-${recordId}`) {
+            otherPopup.style.display = 'none';
+        }
+    });
+    
+    // Remove any existing click outside handlers
+    if (popup.clickOutsideHandler) {
+        document.removeEventListener('click', popup.clickOutsideHandler);
+        popup.clickOutsideHandler = null;
+    }
+    
     if (popup.style.display === 'none' || !popup.style.display) {
         popup.style.display = 'block';
         
@@ -84,8 +97,12 @@ function toggleParamsPopup(recordId) {
             if (!popup.contains(event.target)) {
                 popup.style.display = 'none';
                 document.removeEventListener('click', clickOutsideHandler);
+                popup.clickOutsideHandler = null;
             }
         };
+        
+        // Store reference to handler for cleanup
+        popup.clickOutsideHandler = clickOutsideHandler;
         
         // Use setTimeout to avoid immediate closing
         setTimeout(() => {
