@@ -71,6 +71,32 @@ class App {
     }
 }
 
+// Global function to toggle params popup
+function toggleParamsPopup(recordId) {
+    const popup = document.getElementById(`params-popup-${recordId}`);
+    if (!popup) return;
+    
+    if (popup.style.display === 'none' || !popup.style.display) {
+        popup.style.display = 'block';
+        
+        // Add click outside to close functionality
+        const clickOutsideHandler = (event) => {
+            if (!popup.contains(event.target)) {
+                popup.style.display = 'none';
+                document.removeEventListener('click', clickOutsideHandler);
+            }
+        };
+        
+        // Use setTimeout to avoid immediate closing
+        setTimeout(() => {
+            document.addEventListener('click', clickOutsideHandler);
+        }, 10);
+        
+    } else {
+        popup.style.display = 'none';
+    }
+}
+
 // Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     // Wait for Google Identity Services to load

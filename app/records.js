@@ -280,10 +280,21 @@ class RecordsManager {
         const reason = record.reason;
         const addr = record.addr;
         const contrAddr = record.contrAddr || '';
+        const contractName = record.contractName || '';
+        const method = record.method || '';
+        const params = record.params || '';
         
         // Resolve addresses
         const resolvedAddr = this.addressResolver.resolveAddress(addr);
         const resolvedContrAddr = contrAddr ? this.addressResolver.resolveAddress(contrAddr) : '';
+        
+        // Create contract name display with optional link
+        let contractNameHtml = '';
+        if (contractName && contrAddr) {
+            contractNameHtml = `<a href="https://etherscan.io/address/${contrAddr}" target="_blank" rel="noopener noreferrer" class="contract-name-link">${contractName}</a>`;
+        } else {
+            contractNameHtml = contractName;
+        }
         
         // Determine operation sign and color based on reason
         let operationHtml = '';
@@ -323,11 +334,18 @@ class RecordsManager {
         // Format rate
         const rate = record.rate ? parseFloat(record.rate.rate).toFixed(2) : '0.00';
         
+        // Create unique ID for this record for params popup
+        const recordId = `record-${record.txHash}-${record.indInBlock || 0}`;
+        
         return `
             <div class="record-widget eth-record">
                 <div class="record-header">
                     <span class="record-type eth">ETH</span>
                     <span class="reason ${reason}">${reason}</span>
+                    <span class="contract-name">cn: ${contractNameHtml}</span>
+                    <span class="method">method: ${method}</span>
+                    <span class="params-info">params: ${params ? params.length : 0}</span>
+                    <button class="params-button" onclick="toggleParamsPopup('${recordId}')" title="Show params">...</button>
                 </div>
                 <div class="record-main">
                     <div class="address-line">
@@ -361,6 +379,17 @@ class RecordsManager {
                         <span>internal: ${record.isInternalTx}</span>
                         <span>adv ind: ${record.advInd !== undefined && record.advInd !== null ? record.advInd : 0}</span>
                         <span>trace id: ${record.traceId || ''}</span>
+                    </div>
+                </div>
+                <div id="params-popup-${recordId}" class="params-popup" style="display: none;">
+                    <div class="params-popup-content">
+                        <div class="params-popup-header">
+                            <span>Parameters</span>
+                            <button class="params-popup-close" onclick="toggleParamsPopup('${recordId}')">&times;</button>
+                        </div>
+                        <div class="params-popup-body">
+                            <pre class="params-json">${this.formatParamsForDisplay(params)}</pre>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -908,6 +937,19 @@ class RecordsManager {
             amount: formattedAmount,
             amountInUsd: amountInUsd.toFixed(2)
         };
+    }
+    
+    formatParamsForDisplay(params) {
+        if (!params) return '{}';
+        
+        try {
+            // Try to parse as JSON and format nicely
+            const parsed = JSON.parse(params);
+            return JSON.stringify(parsed, null, 2);
+        } catch (error) {
+            // If it's not valid JSON, return as is
+            return params;
+        }
     }
 
     showNoRecords() {
