@@ -28,3 +28,6 @@
 pnl: - totalPnl - pnlUsd, totalPnl.pnl (в соответствующих формате и цветах)
 diff: totalDiff - startUsd, finalUsd,  diffUsd diffRel (в соответствующих формате и цветах)
 all defi diff: totalLiqDiff - startUsd, finalUsd,  diffUsd diffRel (в соответствующих формате и цветах)
+
+#### Section - Ethereum
+diff: ethPnl.diff - startUsd, finalUsd,  diffUsd diffRel (в соответствующих формате и цветах)
