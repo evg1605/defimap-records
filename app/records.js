@@ -129,6 +129,13 @@ class RecordsManager {
         this.addressResolver.setData(accounts, v2pairs, v3pools);
     }
 
+    updateTabName(count) {
+        const recordsTabButton = document.querySelector('[data-tab="records"]');
+        if (recordsTabButton) {
+            recordsTabButton.textContent = `Records (${count})`;
+        }
+    }
+
     showLoading() {
         this.recordsPanel.className = 'records-panel loading';
         this.recordsPanel.innerHTML = `
@@ -137,6 +144,7 @@ class RecordsManager {
                 <span>Loading records...</span>
             </div>
         `;
+        this.updateTabName('...');
     }
 
     showError(message) {
@@ -174,18 +182,14 @@ class RecordsManager {
         // Build HTML
         this.recordsPanel.className = 'records-panel';
         
-        let html = `
-            <div class="records-header">
-                Records
-                <span class="records-count">(${records.length})</span>
-            </div>
-        `;
+        let html = ``;
 
         for (const [txHash, txRecords] of Object.entries(groupedRecords)) {
             html += this.renderTransactionGroup(txHash, txRecords);
         }
 
         this.recordsPanel.innerHTML = html;
+        this.updateTabName(records.length);
     }
 
     groupRecordsByTransaction(records) {
@@ -970,18 +974,20 @@ class RecordsManager {
     showNoRecords() {
         this.recordsPanel.className = 'records-panel';
         this.recordsPanel.innerHTML = `
-            <div class="records-header">
-                Records
-                <span class="records-count">(0)</span>
-            </div>
             <div class="no-records">
                 No records found for the selected filters
             </div>
         `;
+        this.updateTabName(0);
     }
 
     clear() {
         this.recordsPanel.className = 'records-panel';
         this.recordsPanel.innerHTML = '';
+        
+        const recordsTabButton = document.querySelector('[data-tab="records"]');
+        if (recordsTabButton) {
+            recordsTabButton.textContent = 'Records';
+        }
     }
 }
