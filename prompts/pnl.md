@@ -82,7 +82,6 @@ All DeFi:   # 51 USD # 44 USD # -6.71 # -13.12%  #
 **Diff таблица:**
 
 - diff: totalDiff - startUsd, finalUsd, diffUsd, diffRel (в соответствующих формате и цветах)
-- all defi diff: totalLiqDiff - startUsd, finalUsd, diffUsd, diffRel (в соответствующих формате и цветах)
 
 #### Section - Ethereum
 
@@ -98,6 +97,9 @@ diff: diff - все как и в вышеперечисленных местах
 token.symbol: diff - все как и в вышеперечисленных местах
 список токенов отсортировать по asc по symbol токена
 пропускаем те токены у которых startUsd и finalUsd равны 0 (оба)
+
+### Seciton All defi
+берем данные из поля totalLiqDiff и отображаем аналогично diff в других секциях
 
 ### Section - V2 Pairs
 

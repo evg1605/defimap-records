@@ -58,9 +58,10 @@ class App {
         // Initialize PnL manager
         this.pnlManager.init();
         
-        // Initialize filter manager with callback to update records manager
+        // Initialize filter manager with callback to update records manager and PnL manager
         this.filterManager.init((accounts, v2pairs, v3pools) => {
             this.recordsManager.setFilterData(accounts, v2pairs, v3pools);
+            this.pnlManager.setFilterData(accounts, v2pairs, v3pools);
         });
         
         // Setup query button

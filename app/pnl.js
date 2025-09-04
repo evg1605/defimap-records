@@ -2,10 +2,18 @@
 class PnLManager {
     constructor() {
         this.currentData = null;
+        this.addressResolver = null;
     }
 
     init() {
         console.log('PnLManager initialized');
+    }
+
+    setFilterData(accounts, v2pairs, v3pools) {
+        if (!this.addressResolver) {
+            this.addressResolver = new AddressResolver();
+        }
+        this.addressResolver.setData(accounts, v2pairs, v3pools);
     }
 
     showLoading() {
@@ -66,6 +74,11 @@ class PnLManager {
         // V2 Pairs Section
         if (pnlData.v2Pnls && (pnlData.v2Pnls.diff || (pnlData.v2Pnls.pairsPnls && pnlData.v2Pnls.pairsPnls.length > 0))) {
             html += this.renderV2PairsSection(pnlData.v2Pnls);
+        }
+
+        // V3 Pools Section
+        if (pnlData.v3Pnls && (pnlData.v3Pnls.diff || (pnlData.v3Pnls.nftPnls && pnlData.v3Pnls.nftPnls.length > 0) || (pnlData.v3Pnls.poolsPnls && pnlData.v3Pnls.poolsPnls.length > 0))) {
+            html += this.renderV3PoolsSection(pnlData.v3Pnls);
         }
 
         html += `
@@ -344,6 +357,197 @@ class PnLManager {
         `;
 
         return html;
+    }
+
+    renderV3PoolsSection(v3Pnls) {
+        let html = `
+            <div class="pnl-section">
+                <h3 class="pnl-section-title">V3 Pools</h3>
+                <div class="pnl-section-content">
+                    <div class="pnl-diff-table">
+                        <div class="pnl-diff-header">
+                            <div class="pnl-diff-cell pnl-diff-header-cell"></div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">start</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">final</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">diff</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">diff%</div>
+                        </div>
+        `;
+
+        // First show the overall V3 diff
+        if (v3Pnls.diff) {
+            html += `
+                        <div class="pnl-diff-row">
+                            <div class="pnl-diff-cell pnl-diff-name-cell">Diff:</div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
+                                ${this.formatUsdAmount(v3Pnls.diff.startUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
+                                ${this.formatUsdAmount(v3Pnls.diff.finalUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(v3Pnls.diff.diffUsd)}">
+                                ${this.formatUsdAmount(v3Pnls.diff.diffUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(v3Pnls.diff.diffRel)}" title="${v3Pnls.diff.diffRel}">
+                                ${this.formatPercentage(v3Pnls.diff.diffRel)}
+                            </div>
+                        </div>
+            `;
+        }
+
+        html += `
+                    </div>
+                </div>
+        `;
+
+        // NFT Positions Table
+        if (v3Pnls.nftPnls && v3Pnls.nftPnls.length > 0) {
+            html += this.renderV3NFTsTable(v3Pnls.nftPnls);
+        }
+
+        // Pools Table  
+        if (v3Pnls.poolsPnls && v3Pnls.poolsPnls.length > 0) {
+            html += this.renderV3PoolsTable(v3Pnls.poolsPnls);
+        }
+
+        html += `
+            </div>
+        `;
+
+        return html;
+    }
+
+    renderV3NFTsTable(nftPnls) {
+        let html = `
+                <div class="pnl-section-content">
+                    <div class="pnl-diff-table">
+                        <div class="pnl-diff-header">
+                            <div class="pnl-diff-cell pnl-diff-header-cell"></div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">start</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">final</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">diff</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">diff%</div>
+                        </div>
+        `;
+
+        // Sort NFTs by tokenId (numerically if possible)
+        const sortedNftPnls = [...nftPnls].sort((a, b) => {
+            const tokenIdA = parseInt(a.tokenId, 10);
+            const tokenIdB = parseInt(b.tokenId, 10);
+            if (!isNaN(tokenIdA) && !isNaN(tokenIdB)) {
+                return tokenIdA - tokenIdB;
+            }
+            return a.tokenId.localeCompare(b.tokenId);
+        });
+
+        sortedNftPnls.forEach((nftPnl, index) => {
+            if (nftPnl.diff) {
+                const isFirstNFT = index === 0;
+                const resolvedPoolName = this.resolveV3PoolForPnL(nftPnl.pool);
+                
+                html += `
+                        <div class="pnl-diff-row ${isFirstNFT ? 'pnl-token-separator-row' : ''}">
+                            <div class="pnl-diff-cell pnl-diff-name-cell">${resolvedPoolName} tokenID: ${nftPnl.tokenId}</div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
+                                ${this.formatUsdAmount(nftPnl.diff.startUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
+                                ${this.formatUsdAmount(nftPnl.diff.finalUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(nftPnl.diff.diffUsd)}">
+                                ${this.formatUsdAmount(nftPnl.diff.diffUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(nftPnl.diff.diffRel)}" title="${nftPnl.diff.diffRel}">
+                                ${this.formatPercentage(nftPnl.diff.diffRel)}
+                            </div>
+                        </div>
+                `;
+            }
+        });
+
+        html += `
+                    </div>
+                </div>
+        `;
+
+        return html;
+    }
+
+    renderV3PoolsTable(poolsPnls) {
+        // Sort pools by token symbols
+        const sortedPoolsPnls = [...poolsPnls].sort((a, b) => {
+            const symbolA = `${a.pool?.token0?.symbol || 'TOKEN0'}/${a.pool?.token1?.symbol || 'TOKEN1'}`;
+            const symbolB = `${b.pool?.token0?.symbol || 'TOKEN0'}/${b.pool?.token1?.symbol || 'TOKEN1'}`;
+            return symbolA.localeCompare(symbolB);
+        });
+
+        let html = `
+                <div class="pnl-section-content">
+                    <div class="pnl-diff-table">
+                        <div class="pnl-diff-header">
+                            <div class="pnl-diff-cell pnl-diff-header-cell"></div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">start</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">final</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">diff</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">diff%</div>
+                        </div>
+        `;
+
+        sortedPoolsPnls.forEach((poolPnl, index) => {
+            if (poolPnl.pool && poolPnl.diff) {
+                const isFirstPool = index === 0;
+                const resolvedPoolName = this.resolveV3PoolForPnL(poolPnl.pool);
+                
+                html += `
+                        <div class="pnl-diff-row ${isFirstPool ? 'pnl-token-separator-row' : ''}">
+                            <div class="pnl-diff-cell pnl-diff-name-cell">${resolvedPoolName}:</div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
+                                ${this.formatUsdAmount(poolPnl.diff.startUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
+                                ${this.formatUsdAmount(poolPnl.diff.finalUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(poolPnl.diff.diffUsd)}">
+                                ${this.formatUsdAmount(poolPnl.diff.diffUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(poolPnl.diff.diffRel)}" title="${poolPnl.diff.diffRel}">
+                                ${this.formatPercentage(poolPnl.diff.diffRel)}
+                            </div>
+                        </div>
+                `;
+            }
+        });
+
+        html += `
+                    </div>
+                </div>
+        `;
+
+        return html;
+    }
+
+    resolveV3Pool(pool) {
+        if (this.addressResolver && pool) {
+            // Use the existing address resolution logic but extract just the text
+            const resolvedHtml = this.addressResolver.resolveAddress(pool.addr);
+            // Extract the text content from the HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = resolvedHtml;
+            return tempDiv.textContent || tempDiv.innerText || `${pool.token0?.symbol || 'TOKEN0'}/${pool.token1?.symbol || 'TOKEN1'}`;
+        } else if (pool) {
+            const feePercent = (pool.fee / 10000).toFixed(1);
+            return `${pool.token0?.symbol || 'TOKEN0'}/${pool.token1?.symbol || 'TOKEN1'}-${feePercent}%`;
+        }
+        return 'Unknown Pool';
+    }
+
+    resolveV3PoolForPnL(pool) {
+        // For PnL labels, we don't need the address part - just token symbols and fee
+        if (pool) {
+            const feePercent = (pool.fee / 10000).toFixed(1);
+            return `${pool.token0?.symbol || 'TOKEN0'}/${pool.token1?.symbol || 'TOKEN1'}-${feePercent}%`;
+        }
+        return 'Unknown Pool';
     }
 
 
