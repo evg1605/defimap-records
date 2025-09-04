@@ -69,7 +69,6 @@ PnL:        # -10.86 USD     # -9.44%      #
             #######################################
             # start  # final  # diff  # diff%    #
 Diff:       # 115 USD# 116 USD# 1.41  # 1.23%    #
-All DeFi:   # 51 USD # 44 USD # -6.71 # -13.12%  #
             #######################################
 ```
 
@@ -98,8 +97,9 @@ token.symbol: diff - все как и в вышеперечисленных ме
 список токенов отсортировать по asc по symbol токена
 пропускаем те токены у которых startUsd и finalUsd равны 0 (оба)
 
-### Seciton All defi
-берем данные из поля totalLiqDiff и отображаем аналогично diff в других секциях
+#### Section - All DeFi
+
+diff: totalLiqDiff - startUsd, finalUsd, diffUsd, diffRel (в соответствующих формате и цветах)
 
 ### Section - V2 Pairs
 

@@ -61,6 +61,11 @@ class PnLManager {
         // Total Section
         html += this.renderTotalSection(pnlData);
 
+        // All DeFi Section
+        if (pnlData.totalLiqDiff) {
+            html += this.renderAllDeFiSection(pnlData.totalLiqDiff);
+        }
+
         // Ethereum Section
         if (pnlData.ethPnl) {
             html += this.renderEthereumSection(pnlData.ethPnl);
@@ -134,19 +139,38 @@ class PnLManager {
                                 ${this.formatPercentage(pnlData.totalDiff.diffRel)}
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    renderAllDeFiSection(totalLiqDiff) {
+        return `
+            <div class="pnl-section">
+                <h3 class="pnl-section-title">All DeFi</h3>
+                <div class="pnl-section-content">
+                    <div class="pnl-diff-table">
+                        <div class="pnl-diff-header">
+                            <div class="pnl-diff-cell pnl-diff-header-cell"></div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">start</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">final</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">diff</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">diff%</div>
+                        </div>
                         <div class="pnl-diff-row">
-                            <div class="pnl-diff-cell pnl-diff-name-cell">All DeFi diff:</div>
+                            <div class="pnl-diff-cell pnl-diff-name-cell">Diff:</div>
                             <div class="pnl-diff-cell pnl-diff-data-cell">
-                                ${this.formatUsdAmount(pnlData.totalLiqDiff.startUsd)}
+                                ${this.formatUsdAmount(totalLiqDiff.startUsd)}
                             </div>
                             <div class="pnl-diff-cell pnl-diff-data-cell">
-                                ${this.formatUsdAmount(pnlData.totalLiqDiff.finalUsd)}
+                                ${this.formatUsdAmount(totalLiqDiff.finalUsd)}
                             </div>
-                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(pnlData.totalLiqDiff.diffUsd)}">
-                                ${this.formatUsdAmount(pnlData.totalLiqDiff.diffUsd)}
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(totalLiqDiff.diffUsd)}">
+                                ${this.formatUsdAmount(totalLiqDiff.diffUsd)}
                             </div>
-                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(pnlData.totalLiqDiff.diffRel)}" title="${pnlData.totalLiqDiff.diffRel}">
-                                ${this.formatPercentage(pnlData.totalLiqDiff.diffRel)}
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(totalLiqDiff.diffRel)}" title="${totalLiqDiff.diffRel}">
+                                ${this.formatPercentage(totalLiqDiff.diffRel)}
                             </div>
                         </div>
                     </div>
