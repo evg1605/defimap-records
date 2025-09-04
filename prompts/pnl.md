@@ -35,3 +35,11 @@ all defi diff: totalLiqDiff - startUsd, finalUsd,  diffUsd diffRel (в соот�
 
 #### Section - Ethereum
 diff: ethPnl.diff - startUsd, finalUsd,  diffUsd diffRel (в соответствующих формате и цветах)
+
+### Section - ERC20
+берем данные из поля ercPnls
+
+diff: erc20Pnl.diff - все как и в вышеперечисленных местах
+далее для каждого ercsPnls
+    token.symbol: diff - все как и в вышеперечисленных местах
+список токенов отсортировать по asc по symbol токена
