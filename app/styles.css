@@ -1314,6 +1314,111 @@ body {
     color: #999;
 }
 
+/* PnL Panel Styles */
+.pnl-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+
+.pnl-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.pnl-section {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+}
+
+.pnl-section-title {
+    background: #f8f9fa;
+    padding: 8px 12px;
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.pnl-section-content {
+    padding: 24px;
+}
+
+.pnl-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.pnl-item:last-child {
+    border-bottom: none;
+}
+
+.pnl-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    min-width: 140px;
+    margin-right: 20px;
+}
+
+.pnl-values {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.pnl-value {
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.pnl-value.pnl-positive {
+    color: #2e7d2e;
+    background-color: rgba(46, 125, 46, 0.1);
+}
+
+.pnl-value.pnl-negative {
+    color: #c62828;
+    background-color: rgba(198, 40, 40, 0.1);
+}
+
+.pnl-value.pnl-neutral {
+    color: #666;
+    background-color: rgba(102, 102, 102, 0.1);
+}
+
+.pnl-separator {
+    color: #999;
+    font-size: 14px;
+}
+
+.loading-container,
+.error-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+}
+
+.pnl-start-label,
+.pnl-final-label {
+    font-size: 12px;
+    color: #888;
+    font-weight: 500;
+    margin-right: 4px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .filter-panel {
@@ -1330,5 +1435,33 @@ body {
     
     .token-columns {
         grid-template-columns: 1fr;
+    }
+    
+    .pnl-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .pnl-label {
+        min-width: auto;
+        margin-right: 0;
+    }
+    
+    .pnl-values {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .pnl-section-content {
+        padding: 16px;
+    }
+    
+    .pnl-start-label,
+    .pnl-final-label {
+        font-size: 12px;
+        color: #888;
+        font-weight: 500;
+        margin-right: 4px;
     }
 }
