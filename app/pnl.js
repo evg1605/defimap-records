@@ -63,6 +63,11 @@ class PnLManager {
             html += this.renderERC20Section(pnlData.ercPnls);
         }
 
+        // V2 Pairs Section
+        if (pnlData.v2Pnls && (pnlData.v2Pnls.diff || (pnlData.v2Pnls.pairsPnls && pnlData.v2Pnls.pairsPnls.length > 0))) {
+            html += this.renderV2PairsSection(pnlData.v2Pnls);
+        }
+
         html += `
                 </div>
             </div>
@@ -239,6 +244,93 @@ class PnLManager {
                             </div>
                             <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(ercPnl.diff.diffRel)}" title="${ercPnl.diff.diffRel}">
                                 ${this.formatPercentage(ercPnl.diff.diffRel)}
+                            </div>
+                        </div>
+                `;
+            }
+        });
+
+        html += `
+                    </div>
+                </div>
+            </div>
+        `;
+
+        return html;
+    }
+
+    renderV2PairsSection(v2Pnls) {
+        // Filter out pairs where both startUsd and finalUsd are 0, then sort by token pair symbols
+        const sortedPairsPnls = v2Pnls.pairsPnls ? [...v2Pnls.pairsPnls]
+            .filter(pairPnl => {
+                if (!pairPnl.diff) return false;
+                const startUsd = parseFloat(pairPnl.diff.startUsd || '0');
+                const finalUsd = parseFloat(pairPnl.diff.finalUsd || '0');
+                return !(startUsd === 0 && finalUsd === 0);
+            })
+            .sort((a, b) => {
+                const symbolA = `${a.pair?.token0?.symbol || 'TOKEN0'}/${a.pair?.token1?.symbol || 'TOKEN1'}`;
+                const symbolB = `${b.pair?.token0?.symbol || 'TOKEN0'}/${b.pair?.token1?.symbol || 'TOKEN1'}`;
+                return symbolA.localeCompare(symbolB);
+            }) : [];
+
+        let html = `
+            <div class="pnl-section">
+                <h3 class="pnl-section-title">V2 Pairs</h3>
+                <div class="pnl-section-content">
+                    <div class="pnl-diff-table">
+                        <div class="pnl-diff-header">
+                            <div class="pnl-diff-cell pnl-diff-header-cell"></div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">start</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">final</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">diff</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">diff%</div>
+                        </div>
+        `;
+
+        // First show the overall V2 diff if present
+        if (v2Pnls.diff) {
+            html += `
+                        <div class="pnl-diff-row">
+                            <div class="pnl-diff-cell pnl-diff-name-cell">Diff:</div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
+                                ${this.formatUsdAmount(v2Pnls.diff.startUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
+                                ${this.formatUsdAmount(v2Pnls.diff.finalUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(v2Pnls.diff.diffUsd)}">
+                                ${this.formatUsdAmount(v2Pnls.diff.diffUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(v2Pnls.diff.diffRel)}" title="${v2Pnls.diff.diffRel}">
+                                ${this.formatPercentage(v2Pnls.diff.diffRel)}
+                            </div>
+                        </div>
+            `;
+        }
+
+        // Then show each pair's diff
+        sortedPairsPnls.forEach((pairPnl, index) => {
+            if (pairPnl.pair && pairPnl.diff) {
+                const isFirstPair = index === 0;
+                const token0Symbol = pairPnl.pair.token0?.symbol || 'TOKEN0';
+                const token1Symbol = pairPnl.pair.token1?.symbol || 'TOKEN1';
+                const pairLabel = `${token0Symbol}/${token1Symbol}`;
+                
+                html += `
+                        <div class="pnl-diff-row ${isFirstPair ? 'pnl-token-separator-row' : ''}">
+                            <div class="pnl-diff-cell pnl-diff-name-cell">${pairLabel}:</div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
+                                ${this.formatUsdAmount(pairPnl.diff.startUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
+                                ${this.formatUsdAmount(pairPnl.diff.finalUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(pairPnl.diff.diffUsd)}">
+                                ${this.formatUsdAmount(pairPnl.diff.diffUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(pairPnl.diff.diffRel)}" title="${pairPnl.diff.diffRel}">
+                                ${this.formatPercentage(pairPnl.diff.diffRel)}
                             </div>
                         </div>
                 `;
