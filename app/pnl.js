@@ -58,6 +58,11 @@ class PnLManager {
             html += this.renderEthereumSection(pnlData.ethPnl);
         }
 
+        // ERC20 Section
+        if (pnlData.ercPnls && pnlData.ercPnls.ercsPnls && pnlData.ercPnls.ercsPnls.length > 0) {
+            html += this.renderERC20Section(pnlData.ercPnls);
+        }
+
         html += `
                 </div>
             </div>
@@ -164,6 +169,94 @@ class PnLManager {
                 </div>
             </div>
         `;
+    }
+
+    renderERC20Section(ercsPnl) {
+        // Filter out tokens where both startUsd and finalUsd are 0, then sort by symbol
+        const sortedErcPnls = [...ercsPnl.ercsPnls]
+            .filter(ercPnl => {
+                if (!ercPnl.diff) return false;
+                const startUsd = parseFloat(ercPnl.diff.startUsd || '0');
+                const finalUsd = parseFloat(ercPnl.diff.finalUsd || '0');
+                return !(startUsd === 0 && finalUsd === 0);
+            })
+            .sort((a, b) => {
+                const symbolA = a.token?.symbol || '';
+                const symbolB = b.token?.symbol || '';
+                return symbolA.localeCompare(symbolB);
+            });
+
+        let html = `
+            <div class="pnl-section">
+                <h3 class="pnl-section-title">ERC20</h3>
+                <div class="pnl-section-content">
+        `;
+
+        // First show the overall ERC20 diff
+        if (ercsPnl.diff) {
+            html += `
+                <div class="pnl-item">
+                    <span class="pnl-label">Diff:</span>
+                    <span class="pnl-values">
+                        <span class="pnl-start-label">start</span>
+                        <span class="pnl-value">
+                            ${this.formatUsdAmount(ercsPnl.diff.startUsd)}
+                        </span>
+                        <span class="pnl-separator">,</span>
+                        <span class="pnl-final-label">final</span>
+                        <span class="pnl-value">
+                            ${this.formatUsdAmount(ercsPnl.diff.finalUsd)}
+                        </span>
+                        <span class="pnl-separator">,</span>
+                        <span class="pnl-value ${this.getValueClass(ercsPnl.diff.diffUsd)}">
+                            ${this.formatUsdAmount(ercsPnl.diff.diffUsd)}
+                        </span>
+                        <span class="pnl-separator">,</span>
+                        <span class="pnl-value ${this.getValueClass(ercsPnl.diff.diffRel)}" title="${ercsPnl.diff.diffRel}">
+                            ${this.formatPercentage(ercsPnl.diff.diffRel)}
+                        </span>
+                    </span>
+                </div>
+            `;
+        }
+
+        // Then show each token's diff
+        sortedErcPnls.forEach((ercPnl, index) => {
+            if (ercPnl.token && ercPnl.diff) {
+                const isFirstToken = index === 0;
+                html += `
+                    <div class="pnl-item ${isFirstToken ? 'pnl-item-first-token' : ''}">
+                        <span class="pnl-label">${ercPnl.token.symbol}:</span>
+                        <span class="pnl-values">
+                            <span class="pnl-start-label">start</span>
+                            <span class="pnl-value">
+                                ${this.formatUsdAmount(ercPnl.diff.startUsd)}
+                            </span>
+                            <span class="pnl-separator">,</span>
+                            <span class="pnl-final-label">final</span>
+                            <span class="pnl-value">
+                                ${this.formatUsdAmount(ercPnl.diff.finalUsd)}
+                            </span>
+                            <span class="pnl-separator">,</span>
+                            <span class="pnl-value ${this.getValueClass(ercPnl.diff.diffUsd)}">
+                                ${this.formatUsdAmount(ercPnl.diff.diffUsd)}
+                            </span>
+                            <span class="pnl-separator">,</span>
+                            <span class="pnl-value ${this.getValueClass(ercPnl.diff.diffRel)}" title="${ercPnl.diff.diffRel}">
+                                ${this.formatPercentage(ercPnl.diff.diffRel)}
+                            </span>
+                        </span>
+                    </div>
+                `;
+            }
+        });
+
+        html += `
+                </div>
+            </div>
+        `;
+
+        return html;
     }
 
     // Helper functions

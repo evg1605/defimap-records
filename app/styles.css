@@ -1419,6 +1419,11 @@ body {
     margin-right: 4px;
 }
 
+.pnl-item-first-token {
+    border-top: 1px solid #ccc !important;
+    padding-top: 16px !important;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .filter-panel {
