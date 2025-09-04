@@ -3,7 +3,6 @@
 const apiUrl = 'http://localhost:8090/api/gql/query';
 
 
-
 // Google Identity Services configuration
 const googleConfig = {
     client_id: '821420392447-77ak5cfprj41f7v901ih84292h7dsng8.apps.googleusercontent.com'
