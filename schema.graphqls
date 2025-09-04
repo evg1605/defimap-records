@@ -726,6 +726,29 @@ input V3NFTStateBlockArg {
     block: Uint64!
 }
 
+# Describe start and final amounts for some position
+type StartFinalDiff {
+    # Amount at the start of the period
+    startUsd: String!
+
+    # Amount at the end of the period
+    finalUsd: String!
+
+    # Difference between final and start amounts
+    diffUsd: String!
+
+    # Percentage difference (negative values indicate loss)
+    diffRel: String!
+}
+
+# Profit and loss summary
+type Pnl {
+    # Profit/loss in USD
+    pnlUsd: String!
+    # Profit/loss percentage
+    pnl: String!
+}
+
 # Profit and loss calculations for a time period
 type Pnls {
     # Starting block of the calculation period
@@ -748,18 +771,61 @@ type Pnls {
     # Maximum synchronized date
     maxSyncDate: DateEx!
 
+    # Eth profit and loss details
+    ethPnl:EthPnl
+
+    # Eth profit and loss details
+    ercPnls:ErcsPnl
+
     # V2 profit and loss details
     v2Pnls: V2Pnl
+
     # V3 profit and loss details
     v3Pnls: V3Pnl
-    # Total aggregated profit and loss
-    totalPnl: PnlAggregated!
+
+    # Total aggregated profit and loss for liquidity
+    totalLiqPnl: PnlAggregated!
+
+    # Difference in total liquidity value from start to end
+    totalLiqDiff: StartFinalDiff!
+
+    # Difference in total
+    totalDiff: StartFinalDiff!
+
+    # Total profit and loss including liquidity and token holdings and eth balances
+    totalPnl: Pnl!
+}
+
+# Eth profit and loss details
+type EthPnl {
+    # Difference in total eth value from start to end
+    diff: StartFinalDiff!
+}
+
+# Ercs profit and loss details
+type ErcsPnl {
+    # Individual ERC20 token profit and loss
+    ercsPnls: [ErcPnl!]!
+    # Difference in total ercs value from start to end
+    diff: StartFinalDiff!
+}
+
+# Erc profit and loss details
+type ErcPnl {
+    # Token contract address
+    tokenAddr: String!
+    # Token details
+    token: Token! @goField(forceResolver: true)
+    # Difference in total erc value from start to end
+    diff: StartFinalDiff!
 }
 
 # V2 profit and loss details
 type V2Pnl {
     # Individual pair profit and loss
     pairsPnls: [V2PairPnl!]!
+    # Difference in total liquidity value from start to end
+    diff: StartFinalDiff!
     # Total V2 profit and loss
     totalPnl: PnlAggregated!
 }
@@ -770,6 +836,8 @@ type V2PairPnl {
     pairAddr: String!
     # V2 pair details
     pair: V2Pair! @goField(forceResolver: true)
+    # Difference in total liquidity value from start to end
+    diff: StartFinalDiff!
     # Position profit and loss details
     pnl: PositionPnl!
 }
@@ -780,6 +848,8 @@ type V3Pnl {
     nftPnls:[V3NFTPnl!]!
     # Aggregated pool profit and loss
     poolsPnls:[V3PoolPnl!]!
+    # Difference in total liquidity value from start to end
+    diff: StartFinalDiff!
     # Total V3 profit and loss
     totalPnl: PnlAggregated!
 }
@@ -790,7 +860,8 @@ type V3PoolPnl {
     poolAddr: String!
     # V3 pool details
     pool: V3Pool! @goField(forceResolver: true)
-
+    # Difference in total liquidity value from start to end
+    diff: StartFinalDiff!
     # Aggregated profit and loss for the pool
     pnl:PnlAggregated!
 }
@@ -804,6 +875,8 @@ type V3NFTPnl {
     # V3 pool details
     pool: V3Pool! @goField(forceResolver: true)
 
+    # Difference in total liquidity value from start to end
+    diff: StartFinalDiff!
     # Position profit and loss details
     pnl: PositionPnl!
 }
@@ -814,10 +887,8 @@ type PnlAggregated {
     totalInvestedUsd: String!
     # Total amount withdrawn in USD
     totalWithdrawnUsd: String!
-    # Profit/loss in USD
-    pnlUsd: String!
-    # Profit/loss percentage
-    pnl: String!
+    # Profit/loss
+    pnl: Pnl!
     # Token-specific balance information
     tokenBalances:[PnlTokenBalance!]!
 }
@@ -869,10 +940,8 @@ type PositionPnl{
     pnlToken0: String!
     # Profit/loss in token1 terms
     pnlToken1: String!
-    # Profit/loss in USD
-    pnlUsd: String!
-    # Profit/loss percentage
-    pnl: String!
+    # Profit/loss
+    pnl: Pnl!
 }
 
 type Query {
