@@ -47,12 +47,16 @@ class App {
     constructor() {
         this.filterManager = new FilterManager();
         this.recordsManager = new RecordsManager();
+        this.pnlManager = new PnLManager();
         this.tabManager = new TabManager();
     }
 
     init() {
         // Initialize tab manager
         this.tabManager.init();
+        
+        // Initialize PnL manager
+        this.pnlManager.init();
         
         // Initialize filter manager with callback to update records manager
         this.filterManager.init((accounts, v2pairs, v3pools) => {
@@ -88,7 +92,7 @@ class App {
         if (activeTab === 'records') {
             this.recordsManager.showLoading();
         } else if (activeTab === 'pnl') {
-            this.showPnLLoading();
+            this.pnlManager.showLoading();
         }
         
         try {
@@ -108,8 +112,8 @@ class App {
                 const data = await api.query(queries.profileRecords, variables);
                 this.recordsManager.displayRecords(data);
             } else if (activeTab === 'pnl') {
-                // TODO: Implement PnL query when available
-                this.showPnLPlaceholder();
+                const data = await api.query(queries.pnls, variables);
+                this.pnlManager.displayPnL(data);
             }
             
         } catch (error) {
@@ -117,7 +121,7 @@ class App {
             if (activeTab === 'records') {
                 this.recordsManager.showError(`Query failed: ${error.message}`);
             } else if (activeTab === 'pnl') {
-                this.showPnLError(`Query failed: ${error.message}`);
+                this.pnlManager.showError(`Query failed: ${error.message}`);
             }
         } finally {
             // Re-enable all controls
@@ -137,46 +141,6 @@ class App {
                 el.classList.remove('disabled');
                 el.style.pointerEvents = '';
             });
-        }
-    }
-
-    showPnLLoading() {
-        const pnlPanel = document.getElementById('pnl-panel');
-        if (pnlPanel) {
-            pnlPanel.className = 'pnl-panel loading';
-            pnlPanel.innerHTML = `
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <span>Loading PnL data...</span>
-                </div>
-            `;
-        }
-    }
-
-    showPnLError(message) {
-        const pnlPanel = document.getElementById('pnl-panel');
-        if (pnlPanel) {
-            pnlPanel.className = 'pnl-panel error';
-            pnlPanel.innerHTML = `
-                <div class="error">
-                    <span class="error-message">${message}</span>
-                    <button class="btn-retry" onclick="app.runQuery()">Retry</button>
-                </div>
-            `;
-        }
-    }
-
-    showPnLPlaceholder() {
-        const pnlPanel = document.getElementById('pnl-panel');
-        if (pnlPanel) {
-            pnlPanel.className = 'pnl-panel';
-            pnlPanel.innerHTML = `
-                <div class="no-records">
-                    <h3>PnL Analysis</h3>
-                    <p>PnL functionality will be implemented in a future update.</p>
-                    <p>This will show profit and loss analysis for the selected filters.</p>
-                </div>
-            `;
         }
     }
 }

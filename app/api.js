@@ -730,5 +730,280 @@ const queries = {
                 }
             }
         }
+    `,
+
+    pnls: `
+        query GetPnls($fromDate: String!, $toDate: String, $addrs: [String!], $v2PairsAddrs: [String!], $v3PoolsAddrs: [String!]) {
+            pnls(fromDate: $fromDate, toDate: $toDate, addrs: $addrs, v2PairsAddrs: $v2PairsAddrs, v3PoolsAddrs: $v3PoolsAddrs) {
+                fromBlock
+                toBlock
+                fromBlockDate {
+                    block
+                    date
+                    unixDate
+                }
+                toBlockDate {
+                    block
+                    date
+                    unixDate
+                }
+                minSyncBlock
+                minSyncDate {
+                    date
+                    unixDate
+                }
+                maxSyncBlock
+                maxSyncDate {
+                    date
+                    unixDate
+                }
+                ethPnl {
+                    diff {
+                        startUsd
+                        finalUsd
+                        diffUsd
+                        diffRel
+                    }
+                }
+                ercPnls {
+                    ercsPnls {
+                        tokenAddr
+                        token {
+                            addr
+                            symbol
+                            name
+                            decimals
+                        }
+                        diff {
+                            startUsd
+                            finalUsd
+                            diffUsd
+                            diffRel
+                        }
+                    }
+                    diff {
+                        startUsd
+                        finalUsd
+                        diffUsd
+                        diffRel
+                    }
+                }
+                v2Pnls {
+                    pairsPnls {
+                        pairAddr
+                        pair {
+                            addr
+                            token0 {
+                                symbol
+                                name
+                            }
+                            token1 {
+                                symbol
+                                name
+                            }
+                        }
+                        diff {
+                            startUsd
+                            finalUsd
+                            diffUsd
+                            diffRel
+                        }
+                        pnl {
+                            investedToken0
+                            investedToken1
+                            investedInToken0
+                            investedInToken1
+                            investedInUsd
+                            withdrawnToken0
+                            withdrawnToken1
+                            withdrawnInToken0
+                            withdrawnInToken1
+                            withdrawnInUsd
+                            pnlToken0
+                            pnlToken1
+                            pnl {
+                                pnlUsd
+                                pnl
+                            }
+                        }
+                    }
+                    diff {
+                        startUsd
+                        finalUsd
+                        diffUsd
+                        diffRel
+                    }
+                    totalPnl {
+                        totalInvestedUsd
+                        totalWithdrawnUsd
+                        pnl {
+                            pnlUsd
+                            pnl
+                        }
+                        tokenBalances {
+                            tokenAddr
+                            token {
+                                addr
+                                symbol
+                                name
+                                decimals
+                            }
+                            investedAmount
+                            withdrawnAmount
+                            totalInvestedInToken
+                            totalWithdrawnInToken
+                        }
+                    }
+                }
+                v3Pnls {
+                    nftPnls {
+                        tokenId
+                        poolAddr
+                        pool {
+                            addr
+                            fee
+                            token0 {
+                                symbol
+                                name
+                            }
+                            token1 {
+                                symbol
+                                name
+                            }
+                        }
+                        diff {
+                            startUsd
+                            finalUsd
+                            diffUsd
+                            diffRel
+                        }
+                        pnl {
+                            investedToken0
+                            investedToken1
+                            investedInToken0
+                            investedInToken1
+                            investedInUsd
+                            withdrawnToken0
+                            withdrawnToken1
+                            withdrawnInToken0
+                            withdrawnInToken1
+                            withdrawnInUsd
+                            pnlToken0
+                            pnlToken1
+                            pnl {
+                                pnlUsd
+                                pnl
+                            }
+                        }
+                    }
+                    poolsPnls {
+                        poolAddr
+                        pool {
+                            addr
+                            fee
+                            token0 {
+                                symbol
+                                name
+                            }
+                            token1 {
+                                symbol
+                                name
+                            }
+                        }
+                        diff {
+                            startUsd
+                            finalUsd
+                            diffUsd
+                            diffRel
+                        }
+                        pnl {
+                            totalInvestedUsd
+                            totalWithdrawnUsd
+                            pnl {
+                                pnlUsd
+                                pnl
+                            }
+                            tokenBalances {
+                                tokenAddr
+                                token {
+                                    addr
+                                    symbol
+                                    name
+                                    decimals
+                                }
+                                investedAmount
+                                withdrawnAmount
+                                totalInvestedInToken
+                                totalWithdrawnInToken
+                            }
+                        }
+                    }
+                    diff {
+                        startUsd
+                        finalUsd
+                        diffUsd
+                        diffRel
+                    }
+                    totalPnl {
+                        totalInvestedUsd
+                        totalWithdrawnUsd
+                        pnl {
+                            pnlUsd
+                            pnl
+                        }
+                        tokenBalances {
+                            tokenAddr
+                            token {
+                                addr
+                                symbol
+                                name
+                                decimals
+                            }
+                            investedAmount
+                            withdrawnAmount
+                            totalInvestedInToken
+                            totalWithdrawnInToken
+                        }
+                    }
+                }
+                totalLiqPnl {
+                    totalInvestedUsd
+                    totalWithdrawnUsd
+                    pnl {
+                        pnlUsd
+                        pnl
+                    }
+                    tokenBalances {
+                        tokenAddr
+                        token {
+                            addr
+                            symbol
+                            name
+                            decimals
+                        }
+                        investedAmount
+                        withdrawnAmount
+                        totalInvestedInToken
+                        totalWithdrawnInToken
+                    }
+                }
+                totalLiqDiff {
+                    startUsd
+                    finalUsd
+                    diffUsd
+                    diffRel
+                }
+                totalDiff {
+                    startUsd
+                    finalUsd
+                    diffUsd
+                    diffRel
+                }
+                totalPnl {
+                    pnlUsd
+                    pnl
+                }
+            }
+        }
     `
 };
