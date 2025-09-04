@@ -35,15 +35,22 @@ class FilterManager {
         const dateToInput = document.getElementById('date-to-filter');
         const dateToCheckbox = document.getElementById('date-to-checkbox');
         
-        // Set defaults
-        const defaultFromDate = '2025-04-01';
-        const currentDate = new Date().toISOString().split('T')[0];
-        
+        // Set defaults from defaults.js
         dateFromInput.value = defaultFromDate;
-        dateToInput.value = currentDate;
+        
+        if (defaultFromTo === '') {
+            // If defaultFromTo is empty, disable dateTo
+            this.selected.dateToEnabled = false;
+            dateToCheckbox.checked = false;
+            dateToInput.disabled = true;
+            this.selected.dateTo = null;
+        } else {
+            dateToInput.value = defaultFromTo;
+            this.selected.dateTo = defaultFromTo;
+            this.selected.dateToEnabled = true;
+        }
+        
         this.selected.dateFrom = defaultFromDate;
-        this.selected.dateTo = currentDate;
-        this.selected.dateToEnabled = true;
         
         // Handle dateFrom changes
         dateFromInput.addEventListener('change', (e) => {
@@ -173,11 +180,7 @@ class FilterManager {
         // Sort accounts
         const sortedAccounts = [...this.data.accounts].sort();
         
-        // Default accounts to auto-select
-        const defaultAccounts = [
-            '0xeeA92D1E10768Cc89Dc79CB6bC8749dd17bB6D23',
-            '0xbEEb6d5a07e4DC21C59E83d5c1124Ded4c03D452'
-        ];
+        // Use default accounts from defaults.js
         
         sortedAccounts.forEach((account, index) => {
             const item = document.createElement('div');
@@ -188,8 +191,8 @@ class FilterManager {
             checkbox.id = `account-${index}`;
             checkbox.value = account;
             
-            // Auto-select default accounts
-            if (defaultAccounts.includes(account)) {
+            // Auto-select default accounts from defaults.js
+            if (defaultAccounts.includes(account) && account !== '') {
                 checkbox.checked = true;
                 this.selected.accounts.add(account);
             }
