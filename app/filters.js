@@ -173,6 +173,12 @@ class FilterManager {
         // Sort accounts
         const sortedAccounts = [...this.data.accounts].sort();
         
+        // Default accounts to auto-select
+        const defaultAccounts = [
+            '0xeeA92D1E10768Cc89Dc79CB6bC8749dd17bB6D23',
+            '0xbEEb6d5a07e4DC21C59E83d5c1124Ded4c03D452'
+        ];
+        
         sortedAccounts.forEach((account, index) => {
             const item = document.createElement('div');
             item.className = 'multi-select-item';
@@ -181,6 +187,12 @@ class FilterManager {
             checkbox.type = 'checkbox';
             checkbox.id = `account-${index}`;
             checkbox.value = account;
+            
+            // Auto-select default accounts
+            if (defaultAccounts.includes(account)) {
+                checkbox.checked = true;
+                this.selected.accounts.add(account);
+            }
             
             checkbox.addEventListener('change', (e) => {
                 if (e.target.checked) {
@@ -200,6 +212,9 @@ class FilterManager {
             item.appendChild(label);
             dropdown.appendChild(item);
         });
+        
+        // Update the header to reflect auto-selected accounts
+        this.updateMultiSelectHeader('accounts');
     }
 
     populateV2PairsDropdown() {
