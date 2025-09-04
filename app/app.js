@@ -19,8 +19,8 @@ class App {
     async runQuery() {
         const filters = this.filterManager.getSelectedFilters();
         
-        if (!filters.date) {
-            alert('Please select a date');
+        if (!filters.fromDate) {
+            alert('Please select a from date');
             return;
         }
         
@@ -41,8 +41,8 @@ class App {
         try {
             // Prepare query variables
             const variables = {
-                fromDate: filters.date,
-                toDate: '',  // Empty string as per spec
+                fromDate: filters.fromDate,
+                toDate: filters.toDate,  // Either date string or empty string if disabled
                 addrs: filters.accounts,
                 v2PairsAddrs: filters.v2pairs,
                 v3PoolsAddrs: filters.v3pools
@@ -62,7 +62,17 @@ class App {
         } finally {
             // Re-enable all controls
             queryBtn.disabled = false;
-            filterPanel.querySelectorAll('input, button').forEach(el => el.disabled = false);
+            filterPanel.querySelectorAll('input, button').forEach(el => {
+                // Don't re-enable date-to input if checkbox is unchecked
+                if (el.id === 'date-to-filter') {
+                    const checkbox = document.getElementById('date-to-checkbox');
+                    if (checkbox && checkbox.checked) {
+                        el.disabled = false;
+                    }
+                } else {
+                    el.disabled = false;
+                }
+            });
             filterPanel.querySelectorAll('.multi-select').forEach(el => {
                 el.classList.remove('disabled');
                 el.style.pointerEvents = '';

@@ -8,7 +8,9 @@ class FilterManager {
         };
         
         this.selected = {
-            date: null,
+            dateFrom: null,
+            dateTo: null,
+            dateToEnabled: true,
             accounts: new Set(),
             v2pairs: new Set(),
             v3pools: new Set()
@@ -29,14 +31,51 @@ class FilterManager {
     }
 
     setupDateFilter() {
-        const dateInput = document.getElementById('date-filter');
-        // Set default to 2025-04-01
-        const defaultDate = '2025-04-01';
-        dateInput.value = defaultDate;
-        this.selected.date = defaultDate;
+        const dateFromInput = document.getElementById('date-from-filter');
+        const dateToInput = document.getElementById('date-to-filter');
+        const dateToCheckbox = document.getElementById('date-to-checkbox');
         
-        dateInput.addEventListener('change', (e) => {
-            this.selected.date = e.target.value;
+        // Set defaults
+        const defaultFromDate = '2025-04-01';
+        const currentDate = new Date().toISOString().split('T')[0];
+        
+        dateFromInput.value = defaultFromDate;
+        dateToInput.value = currentDate;
+        this.selected.dateFrom = defaultFromDate;
+        this.selected.dateTo = currentDate;
+        this.selected.dateToEnabled = true;
+        
+        // Handle dateFrom changes
+        dateFromInput.addEventListener('change', (e) => {
+            this.selected.dateFrom = e.target.value;
+            // Validate that dateTo is not less than dateFrom
+            if (this.selected.dateToEnabled && this.selected.dateTo && this.selected.dateTo < e.target.value) {
+                this.selected.dateTo = e.target.value;
+                dateToInput.value = e.target.value;
+            }
+        });
+        
+        // Handle dateTo changes
+        dateToInput.addEventListener('change', (e) => {
+            // Validate that dateTo is not less than dateFrom
+            if (e.target.value < this.selected.dateFrom) {
+                e.target.value = this.selected.dateFrom;
+                this.selected.dateTo = this.selected.dateFrom;
+            } else {
+                this.selected.dateTo = e.target.value;
+            }
+        });
+        
+        // Handle checkbox changes
+        dateToCheckbox.addEventListener('change', (e) => {
+            this.selected.dateToEnabled = e.target.checked;
+            dateToInput.disabled = !e.target.checked;
+            
+            if (!e.target.checked) {
+                this.selected.dateTo = null;
+            } else {
+                this.selected.dateTo = dateToInput.value;
+            }
         });
     }
 
@@ -342,7 +381,8 @@ class FilterManager {
         }
         
         return {
-            date: this.selected.date,
+            fromDate: this.selected.dateFrom,
+            toDate: this.selected.dateToEnabled ? this.selected.dateTo : '',
             accounts: Array.from(this.selected.accounts),
             v2pairs: v2pairs,
             v3pools: v3pools

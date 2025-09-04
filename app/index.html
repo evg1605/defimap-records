@@ -27,8 +27,16 @@
             <!-- Header/Filter Panel -->
             <header class="filter-panel">
                 <div class="filter-section">
-                    <label for="date-filter">Date</label>
-                    <input type="date" id="date-filter" class="filter-input">
+                    <label for="date-from-filter">Date From</label>
+                    <input type="date" id="date-from-filter" class="filter-input">
+                </div>
+                
+                <div class="filter-section">
+                    <label for="date-to-filter">Date To</label>
+                    <div class="date-to-container">
+                        <input type="checkbox" id="date-to-checkbox" class="date-to-checkbox" checked>
+                        <input type="date" id="date-to-filter" class="filter-input">
+                    </div>
                 </div>
                 
                 <div class="filter-section">
