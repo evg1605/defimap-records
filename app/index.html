@@ -75,10 +75,32 @@
                 <button id="run-query" class="btn-primary">Run Query</button>
             </header>
 
-            <!-- Records Panel (placeholder for now) -->
-            <main id="records-panel" class="records-panel">
-                <!-- Records will be displayed here -->
-            </main>
+            <!-- Tab Panel -->
+            <div class="tab-panel">
+                <div class="tab-header">
+                    <button class="tab-button active" data-tab="records">Records</button>
+                    <button class="tab-button" data-tab="pnl">PnL</button>
+                </div>
+                
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- Records Tab Content -->
+                    <div id="records-tab" class="tab-pane active">
+                        <!-- Records Panel -->
+                        <main id="records-panel" class="records-panel">
+                            <!-- Records will be displayed here -->
+                        </main>
+                    </div>
+                    
+                    <!-- PnL Tab Content -->
+                    <div id="pnl-tab" class="tab-pane">
+                        <!-- PnL Panel -->
+                        <main id="pnl-panel" class="pnl-panel">
+                            <!-- PnL will be displayed here -->
+                        </main>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

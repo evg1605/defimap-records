@@ -1,11 +1,59 @@
+// Tab Manager
+class TabManager {
+    constructor() {
+        this.activeTab = 'records';
+    }
+    
+    init() {
+        const tabButtons = document.querySelectorAll('.tab-button');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const tabName = e.target.getAttribute('data-tab');
+                this.switchTab(tabName);
+            });
+        });
+    }
+    
+    switchTab(tabName) {
+        if (this.activeTab === tabName) return;
+        
+        // Remove active class from all buttons and panes
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+        
+        // Add active class to selected button and pane
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        document.getElementById(`${tabName}-tab`).classList.add('active');
+        
+        this.activeTab = tabName;
+    }
+    
+    showRecordsTab() {
+        this.switchTab('records');
+    }
+    
+    showPnLTab() {
+        this.switchTab('pnl');
+    }
+    
+    getActiveTab() {
+        return this.activeTab;
+    }
+}
+
 // Main application
 class App {
     constructor() {
         this.filterManager = new FilterManager();
         this.recordsManager = new RecordsManager();
+        this.tabManager = new TabManager();
     }
 
     init() {
+        // Initialize tab manager
+        this.tabManager.init();
+        
         // Initialize filter manager with callback to update records manager
         this.filterManager.init((accounts, v2pairs, v3pools) => {
             this.recordsManager.setFilterData(accounts, v2pairs, v3pools);
@@ -35,8 +83,13 @@ class App {
             el.style.pointerEvents = 'none';
         });
         
-        // Show loading in the records panel
-        this.recordsManager.showLoading();
+        // Show loading based on active tab
+        const activeTab = this.tabManager.getActiveTab();
+        if (activeTab === 'records') {
+            this.recordsManager.showLoading();
+        } else if (activeTab === 'pnl') {
+            this.showPnLLoading();
+        }
         
         try {
             // Prepare query variables
@@ -50,15 +103,22 @@ class App {
             
             console.log('Executing query with variables:', variables);
             
-            // Execute the GraphQL query
-            const data = await api.query(queries.profileRecords, variables);
-            
-            // Display the records
-            this.recordsManager.displayRecords(data);
+            // Execute appropriate query based on active tab
+            if (activeTab === 'records') {
+                const data = await api.query(queries.profileRecords, variables);
+                this.recordsManager.displayRecords(data);
+            } else if (activeTab === 'pnl') {
+                // TODO: Implement PnL query when available
+                this.showPnLPlaceholder();
+            }
             
         } catch (error) {
             console.error('Query error:', error);
-            this.recordsManager.showError(`Query failed: ${error.message}`);
+            if (activeTab === 'records') {
+                this.recordsManager.showError(`Query failed: ${error.message}`);
+            } else if (activeTab === 'pnl') {
+                this.showPnLError(`Query failed: ${error.message}`);
+            }
         } finally {
             // Re-enable all controls
             queryBtn.disabled = false;
@@ -77,6 +137,46 @@ class App {
                 el.classList.remove('disabled');
                 el.style.pointerEvents = '';
             });
+        }
+    }
+
+    showPnLLoading() {
+        const pnlPanel = document.getElementById('pnl-panel');
+        if (pnlPanel) {
+            pnlPanel.className = 'pnl-panel loading';
+            pnlPanel.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <span>Loading PnL data...</span>
+                </div>
+            `;
+        }
+    }
+
+    showPnLError(message) {
+        const pnlPanel = document.getElementById('pnl-panel');
+        if (pnlPanel) {
+            pnlPanel.className = 'pnl-panel error';
+            pnlPanel.innerHTML = `
+                <div class="error">
+                    <span class="error-message">${message}</span>
+                    <button class="btn-retry" onclick="app.runQuery()">Retry</button>
+                </div>
+            `;
+        }
+    }
+
+    showPnLPlaceholder() {
+        const pnlPanel = document.getElementById('pnl-panel');
+        if (pnlPanel) {
+            pnlPanel.className = 'pnl-panel';
+            pnlPanel.innerHTML = `
+                <div class="no-records">
+                    <h3>PnL Analysis</h3>
+                    <p>PnL functionality will be implemented in a future update.</p>
+                    <p>This will show profit and loss analysis for the selected filters.</p>
+                </div>
+            `;
         }
     }
 }
@@ -136,8 +236,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (isAuthenticated) {
             // Authentication successful or not needed, initialize the app
-            const app = new App();
-            app.init();
+            window.app = new App();
+            window.app.init();
         }
         // If not authenticated, checkAndHandleAuth will show sign-in modal
     };
@@ -161,8 +261,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Google Identity Services failed to load');
                 // For localhost, still initialize the app
                 if (apiUrl.includes('localhost')) {
-                    const app = new App();
-                    app.init();
+                    window.app = new App();
+                    window.app.init();
                 }
             }
         }, 10000); // 10 second timeout
