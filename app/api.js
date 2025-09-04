@@ -1,6 +1,4 @@
-// AI - don't change apiUrl value, it's used to switch between local and production server
-// const apiUrl = 'https://defi-map.com/api/api/gql/query';
-const apiUrl = 'http://localhost:8090/api/gql/query';
+// apiUrl is now defined in defaults.js
 
 
 // Google Identity Services configuration
