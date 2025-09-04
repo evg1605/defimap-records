@@ -1424,6 +1424,71 @@ body {
     padding-top: 16px !important;
 }
 
+.pnl-token-separator {
+    border-top: 1px solid #e2e8f0;
+    margin: 12px 0;
+}
+
+.pnl-token-separator-row {
+    border-top: 1px solid #e2e8f0;
+}
+
+.pnl-diff-table {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    font-size: 13px;
+}
+
+.pnl-diff-header,
+.pnl-diff-row {
+    display: table-row;
+}
+
+.pnl-diff-cell {
+    display: table-cell;
+    padding: 4px 6px;
+    border: 1px solid #e2e8f0;
+}
+
+.pnl-diff-header-cell {
+    background: #f8f9fa;
+    font-weight: 500;
+    font-size: 11px;
+    color: #666;
+    text-align: center;
+}
+
+.pnl-diff-name-cell {
+    text-align: left;
+    font-weight: 500;
+    color: #333;
+    min-width: 120px;
+    font-size: 12px;
+}
+
+.pnl-diff-data-cell {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    min-width: 80px;
+    font-size: 12px;
+}
+
+.pnl-diff-data-cell.pnl-positive {
+    color: #2e7d2e;
+    background-color: rgba(46, 125, 46, 0.05);
+}
+
+.pnl-diff-data-cell.pnl-negative {
+    color: #c62828;
+    background-color: rgba(198, 40, 40, 0.05);
+}
+
+.pnl-diff-data-cell.pnl-neutral {
+    color: #666;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .filter-panel {

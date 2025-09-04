@@ -76,63 +76,61 @@ class PnLManager {
             <div class="pnl-section">
                 <h3 class="pnl-section-title">Total</h3>
                 <div class="pnl-section-content">
-                    <div class="pnl-item">
-                        <span class="pnl-label">PnL:</span>
-                        <span class="pnl-values">
-                            <span class="pnl-value ${this.getValueClass(pnlData.totalPnl.pnlUsd)}">
+                    <div class="pnl-diff-table">
+                        <div class="pnl-diff-header">
+                            <div class="pnl-diff-cell pnl-diff-header-cell"></div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">PnL USD</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">PnL %</div>
+                        </div>
+                        <div class="pnl-diff-row">
+                            <div class="pnl-diff-cell pnl-diff-name-cell">PnL:</div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(pnlData.totalPnl.pnlUsd)}">
                                 ${this.formatUsdAmount(pnlData.totalPnl.pnlUsd)}
-                            </span>
-                            <span class="pnl-separator">,</span>
-                            <span class="pnl-value ${this.getValueClass(pnlData.totalPnl.pnl)}" title="${pnlData.totalPnl.pnl}">
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(pnlData.totalPnl.pnl)}" title="${pnlData.totalPnl.pnl}">
                                 ${this.formatPercentage(pnlData.totalPnl.pnl)}
-                            </span>
-                        </span>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="pnl-item">
-                        <span class="pnl-label">Diff:</span>
-                        <span class="pnl-values">
-                            <span class="pnl-start-label">start</span>
-                            <span class="pnl-value">
+                    <div class="pnl-diff-table">
+                        <div class="pnl-diff-header">
+                            <div class="pnl-diff-cell pnl-diff-header-cell"></div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">start</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">final</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">diff</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">diff%</div>
+                        </div>
+                        <div class="pnl-diff-row">
+                            <div class="pnl-diff-cell pnl-diff-name-cell">Diff:</div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
                                 ${this.formatUsdAmount(pnlData.totalDiff.startUsd)}
-                            </span>
-                            <span class="pnl-separator">,</span>
-                            <span class="pnl-final-label">final</span>
-                            <span class="pnl-value">
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
                                 ${this.formatUsdAmount(pnlData.totalDiff.finalUsd)}
-                            </span>
-                            <span class="pnl-separator">,</span>
-                            <span class="pnl-value ${this.getValueClass(pnlData.totalDiff.diffUsd)}">
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(pnlData.totalDiff.diffUsd)}">
                                 ${this.formatUsdAmount(pnlData.totalDiff.diffUsd)}
-                            </span>
-                            <span class="pnl-separator">,</span>
-                            <span class="pnl-value ${this.getValueClass(pnlData.totalDiff.diffRel)}" title="${pnlData.totalDiff.diffRel}">
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(pnlData.totalDiff.diffRel)}" title="${pnlData.totalDiff.diffRel}">
                                 ${this.formatPercentage(pnlData.totalDiff.diffRel)}
-                            </span>
-                        </span>
-                    </div>
-                    
-                    <div class="pnl-item">
-                        <span class="pnl-label">All DeFi diff:</span>
-                        <span class="pnl-values">
-                            <span class="pnl-start-label">start</span>
-                            <span class="pnl-value">
+                            </div>
+                        </div>
+                        <div class="pnl-diff-row">
+                            <div class="pnl-diff-cell pnl-diff-name-cell">All DeFi diff:</div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
                                 ${this.formatUsdAmount(pnlData.totalLiqDiff.startUsd)}
-                            </span>
-                            <span class="pnl-separator">,</span>
-                            <span class="pnl-final-label">final</span>
-                            <span class="pnl-value">
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
                                 ${this.formatUsdAmount(pnlData.totalLiqDiff.finalUsd)}
-                            </span>
-                            <span class="pnl-separator">,</span>
-                            <span class="pnl-value ${this.getValueClass(pnlData.totalLiqDiff.diffUsd)}">
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(pnlData.totalLiqDiff.diffUsd)}">
                                 ${this.formatUsdAmount(pnlData.totalLiqDiff.diffUsd)}
-                            </span>
-                            <span class="pnl-separator">,</span>
-                            <span class="pnl-value ${this.getValueClass(pnlData.totalLiqDiff.diffRel)}" title="${pnlData.totalLiqDiff.diffRel}">
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(pnlData.totalLiqDiff.diffRel)}" title="${pnlData.totalLiqDiff.diffRel}">
                                 ${this.formatPercentage(pnlData.totalLiqDiff.diffRel)}
-                            </span>
-                        </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -144,27 +142,29 @@ class PnLManager {
             <div class="pnl-section">
                 <h3 class="pnl-section-title">Ethereum</h3>
                 <div class="pnl-section-content">
-                    <div class="pnl-item">
-                        <span class="pnl-label">Diff:</span>
-                        <span class="pnl-values">
-                            <span class="pnl-start-label">start</span>
-                            <span class="pnl-value">
+                    <div class="pnl-diff-table">
+                        <div class="pnl-diff-header">
+                            <div class="pnl-diff-cell pnl-diff-header-cell"></div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">start</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">final</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">diff</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">diff%</div>
+                        </div>
+                        <div class="pnl-diff-row">
+                            <div class="pnl-diff-cell pnl-diff-name-cell">Diff:</div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
                                 ${this.formatUsdAmount(ethPnl.diff.startUsd)}
-                            </span>
-                            <span class="pnl-separator">,</span>
-                            <span class="pnl-final-label">final</span>
-                            <span class="pnl-value">
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
                                 ${this.formatUsdAmount(ethPnl.diff.finalUsd)}
-                            </span>
-                            <span class="pnl-separator">,</span>
-                            <span class="pnl-value ${this.getValueClass(ethPnl.diff.diffUsd)}">
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(ethPnl.diff.diffUsd)}">
                                 ${this.formatUsdAmount(ethPnl.diff.diffUsd)}
-                            </span>
-                            <span class="pnl-separator">,</span>
-                            <span class="pnl-value ${this.getValueClass(ethPnl.diff.diffRel)}" title="${ethPnl.diff.diffRel}">
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(ethPnl.diff.diffRel)}" title="${ethPnl.diff.diffRel}">
                                 ${this.formatPercentage(ethPnl.diff.diffRel)}
-                            </span>
-                        </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -190,33 +190,34 @@ class PnLManager {
             <div class="pnl-section">
                 <h3 class="pnl-section-title">ERC20</h3>
                 <div class="pnl-section-content">
+                    <div class="pnl-diff-table">
+                        <div class="pnl-diff-header">
+                            <div class="pnl-diff-cell pnl-diff-header-cell"></div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">start</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">final</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">diff</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">diff%</div>
+                        </div>
         `;
 
         // First show the overall ERC20 diff
         if (ercsPnl.diff) {
             html += `
-                <div class="pnl-item">
-                    <span class="pnl-label">Diff:</span>
-                    <span class="pnl-values">
-                        <span class="pnl-start-label">start</span>
-                        <span class="pnl-value">
-                            ${this.formatUsdAmount(ercsPnl.diff.startUsd)}
-                        </span>
-                        <span class="pnl-separator">,</span>
-                        <span class="pnl-final-label">final</span>
-                        <span class="pnl-value">
-                            ${this.formatUsdAmount(ercsPnl.diff.finalUsd)}
-                        </span>
-                        <span class="pnl-separator">,</span>
-                        <span class="pnl-value ${this.getValueClass(ercsPnl.diff.diffUsd)}">
-                            ${this.formatUsdAmount(ercsPnl.diff.diffUsd)}
-                        </span>
-                        <span class="pnl-separator">,</span>
-                        <span class="pnl-value ${this.getValueClass(ercsPnl.diff.diffRel)}" title="${ercsPnl.diff.diffRel}">
-                            ${this.formatPercentage(ercsPnl.diff.diffRel)}
-                        </span>
-                    </span>
-                </div>
+                        <div class="pnl-diff-row">
+                            <div class="pnl-diff-cell pnl-diff-name-cell">Diff:</div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
+                                ${this.formatUsdAmount(ercsPnl.diff.startUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
+                                ${this.formatUsdAmount(ercsPnl.diff.finalUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(ercsPnl.diff.diffUsd)}">
+                                ${this.formatUsdAmount(ercsPnl.diff.diffUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(ercsPnl.diff.diffRel)}" title="${ercsPnl.diff.diffRel}">
+                                ${this.formatPercentage(ercsPnl.diff.diffRel)}
+                            </div>
+                        </div>
             `;
         }
 
@@ -225,39 +226,34 @@ class PnLManager {
             if (ercPnl.token && ercPnl.diff) {
                 const isFirstToken = index === 0;
                 html += `
-                    <div class="pnl-item ${isFirstToken ? 'pnl-item-first-token' : ''}">
-                        <span class="pnl-label">${ercPnl.token.symbol}:</span>
-                        <span class="pnl-values">
-                            <span class="pnl-start-label">start</span>
-                            <span class="pnl-value">
+                        <div class="pnl-diff-row ${isFirstToken ? 'pnl-token-separator-row' : ''}">
+                            <div class="pnl-diff-cell pnl-diff-name-cell">${ercPnl.token.symbol}:</div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
                                 ${this.formatUsdAmount(ercPnl.diff.startUsd)}
-                            </span>
-                            <span class="pnl-separator">,</span>
-                            <span class="pnl-final-label">final</span>
-                            <span class="pnl-value">
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell">
                                 ${this.formatUsdAmount(ercPnl.diff.finalUsd)}
-                            </span>
-                            <span class="pnl-separator">,</span>
-                            <span class="pnl-value ${this.getValueClass(ercPnl.diff.diffUsd)}">
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(ercPnl.diff.diffUsd)}">
                                 ${this.formatUsdAmount(ercPnl.diff.diffUsd)}
-                            </span>
-                            <span class="pnl-separator">,</span>
-                            <span class="pnl-value ${this.getValueClass(ercPnl.diff.diffRel)}" title="${ercPnl.diff.diffRel}">
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(ercPnl.diff.diffRel)}" title="${ercPnl.diff.diffRel}">
                                 ${this.formatPercentage(ercPnl.diff.diffRel)}
-                            </span>
-                        </span>
-                    </div>
+                            </div>
+                        </div>
                 `;
             }
         });
 
         html += `
+                    </div>
                 </div>
             </div>
         `;
 
         return html;
     }
+
 
     // Helper functions
     formatUsdAmount(amountStr) {
