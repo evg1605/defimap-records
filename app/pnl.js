@@ -163,11 +163,11 @@ class PnLManager {
                         </div>
                         <div class="pnl-diff-row">
                             <div class="pnl-diff-cell pnl-diff-name-cell">PnL:</div>
-                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(totalLiqPnl.pnlUsd)}">
-                                ${this.formatUsdAmount(totalLiqPnl.pnlUsd)}
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(totalLiqPnl.pnl.pnlUsd)}">
+                                ${this.formatUsdAmount(totalLiqPnl.pnl.pnlUsd)}
                             </div>
-                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(totalLiqPnl.pnl)}" title="${totalLiqPnl.pnl}">
-                                ${this.formatPercentage(totalLiqPnl.pnl)}
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(totalLiqPnl.pnl.pnl)}" title="${totalLiqPnl.pnl.pnl}">
+                                ${this.formatPercentage(totalLiqPnl.pnl.pnl)}
                             </div>
                         </div>
                     </div>
