@@ -151,9 +151,10 @@ diff: diff - все как и в вышеперечисленных местах
 ```
 вот порядок вывода
 
-minSyncBlock , minSyncDate.firstBlockForDate , minSyncDate.date
+minSyncBlock ,  minSyncDate.date
 fromBlock , fromBlockDate.firstBlockForDate , fromBlockDate.date
+maxSyncBlock ,  maxSyncDate.date
 toBlock , toBlockDate.firstBlockForDate , toBlockDate.date
-maxSyncBlock , maxSyncDate.firstBlockForDate , maxSyncDate.date
+
 
 

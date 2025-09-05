@@ -738,11 +738,13 @@ const queries = {
                 toBlock
                 fromBlockDate {
                     block
+                    firstBlockForDate
                     date
                     unixDate
                 }
                 toBlockDate {
                     block
+                    firstBlockForDate
                     date
                     unixDate
                 }

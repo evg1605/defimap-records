@@ -86,6 +86,9 @@ class PnLManager {
             html += this.renderV3PoolsSection(pnlData.v3Pnls);
         }
 
+        // Debug Info Section
+        html += this.renderDebugInfoSection(pnlData);
+
         html += `
                 </div>
             </div>
@@ -658,6 +661,48 @@ class PnLManager {
             return `${pool.token0?.symbol || 'TOKEN0'}/${pool.token1?.symbol || 'TOKEN1'}-${feePercent}%`;
         }
         return 'Unknown Pool';
+    }
+
+    renderDebugInfoSection(pnlData) {
+        return `
+            <div class="pnl-section">
+                <h3 class="pnl-section-title">Debug Info</h3>
+                <div class="pnl-section-content">
+                    <div class="debug-info-table">
+                        <div class="debug-info-row">
+                            <div class="debug-info-label">Min Sync:</div>
+                            <div class="debug-info-value">
+                                Block: ${pnlData.minSyncBlock} | 
+                                Date: ${pnlData.minSyncDate?.date || 'N/A'}
+                            </div>
+                        </div>
+                        <div class="debug-info-row">
+                            <div class="debug-info-label">From:</div>
+                            <div class="debug-info-value">
+                                Block: ${pnlData.fromBlock} | 
+                                First Block: ${pnlData.fromBlockDate?.firstBlockForDate || 'N/A'} | 
+                                Date: ${pnlData.fromBlockDate?.date || 'N/A'}
+                            </div>
+                        </div>
+                        <div class="debug-info-row">
+                            <div class="debug-info-label">Max Sync:</div>
+                            <div class="debug-info-value">
+                                Block: ${pnlData.maxSyncBlock} | 
+                                Date: ${pnlData.maxSyncDate?.date || 'N/A'}
+                            </div>
+                        </div>
+                        <div class="debug-info-row">
+                            <div class="debug-info-label">To:</div>
+                            <div class="debug-info-value">
+                                Block: ${pnlData.toBlock} | 
+                                First Block: ${pnlData.toBlockDate?.firstBlockForDate || 'N/A'} | 
+                                Date: ${pnlData.toBlockDate?.date || 'N/A'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
 
