@@ -99,6 +99,8 @@ token.symbol: diff - все как и в вышеперечисленных ме
 
 #### Section - All DeFi
 
+pnl: data from - totalLiqPnl, make it the same patter like in Section - Total
+
 diff: totalLiqDiff - startUsd, finalUsd, diffUsd, diffRel (в соответствующих формате и цветах)
 
 ### Section - V2 Pairs

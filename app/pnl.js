@@ -62,8 +62,8 @@ class PnLManager {
         html += this.renderTotalSection(pnlData);
 
         // All DeFi Section
-        if (pnlData.totalLiqDiff) {
-            html += this.renderAllDeFiSection(pnlData.totalLiqDiff);
+        if (pnlData.totalLiqDiff || pnlData.totalLiqPnl) {
+            html += this.renderAllDeFiSection(pnlData.totalLiqDiff, pnlData.totalLiqPnl);
         }
 
         // Ethereum Section
@@ -145,11 +145,38 @@ class PnLManager {
         `;
     }
 
-    renderAllDeFiSection(totalLiqDiff) {
-        return `
+    renderAllDeFiSection(totalLiqDiff, totalLiqPnl) {
+        let html = `
             <div class="pnl-section">
                 <h3 class="pnl-section-title">All DeFi</h3>
                 <div class="pnl-section-content">
+        `;
+
+        // PnL table if totalLiqPnl is available
+        if (totalLiqPnl) {
+            html += `
+                    <div class="pnl-diff-table">
+                        <div class="pnl-diff-header">
+                            <div class="pnl-diff-cell pnl-diff-header-cell"></div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">PnL USD</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">PnL %</div>
+                        </div>
+                        <div class="pnl-diff-row">
+                            <div class="pnl-diff-cell pnl-diff-name-cell">PnL:</div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(totalLiqPnl.pnlUsd)}">
+                                ${this.formatUsdAmount(totalLiqPnl.pnlUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(totalLiqPnl.pnl)}" title="${totalLiqPnl.pnl}">
+                                ${this.formatPercentage(totalLiqPnl.pnl)}
+                            </div>
+                        </div>
+                    </div>
+            `;
+        }
+
+        // Diff table if totalLiqDiff is available
+        if (totalLiqDiff) {
+            html += `
                     <div class="pnl-diff-table">
                         <div class="pnl-diff-header">
                             <div class="pnl-diff-cell pnl-diff-header-cell"></div>
@@ -174,9 +201,15 @@ class PnLManager {
                             </div>
                         </div>
                     </div>
+            `;
+        }
+
+        html += `
                 </div>
             </div>
         `;
+
+        return html;
     }
 
     renderEthereumSection(ethPnl) {
