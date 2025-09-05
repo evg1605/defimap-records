@@ -77,12 +77,12 @@ class PnLManager {
         }
 
         // V2 Pairs Section
-        if (pnlData.v2Pnls && (pnlData.v2Pnls.diff || (pnlData.v2Pnls.pairsPnls && pnlData.v2Pnls.pairsPnls.length > 0))) {
+        if (pnlData.v2Pnls && (pnlData.v2Pnls.diff || pnlData.v2Pnls.totalPnl || (pnlData.v2Pnls.pairsPnls && pnlData.v2Pnls.pairsPnls.length > 0))) {
             html += this.renderV2PairsSection(pnlData.v2Pnls);
         }
 
         // V3 Pools Section
-        if (pnlData.v3Pnls && (pnlData.v3Pnls.diff || (pnlData.v3Pnls.nftPnls && pnlData.v3Pnls.nftPnls.length > 0) || (pnlData.v3Pnls.poolsPnls && pnlData.v3Pnls.poolsPnls.length > 0))) {
+        if (pnlData.v3Pnls && (pnlData.v3Pnls.diff || pnlData.v3Pnls.totalPnl || (pnlData.v3Pnls.nftPnls && pnlData.v3Pnls.nftPnls.length > 0) || (pnlData.v3Pnls.poolsPnls && pnlData.v3Pnls.poolsPnls.length > 0))) {
             html += this.renderV3PoolsSection(pnlData.v3Pnls);
         }
 
@@ -348,6 +348,33 @@ class PnLManager {
             <div class="pnl-section">
                 <h3 class="pnl-section-title">V2 Pairs</h3>
                 <div class="pnl-section-content">
+        `;
+
+        // PnL table if totalPnl is available
+        if (v2Pnls.totalPnl) {
+            html += `
+                    <div class="pnl-diff-table">
+                        <div class="pnl-diff-header">
+                            <div class="pnl-diff-cell pnl-diff-header-cell"></div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">PnL USD</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">PnL %</div>
+                        </div>
+                        <div class="pnl-diff-row">
+                            <div class="pnl-diff-cell pnl-diff-name-cell">PnL:</div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(v2Pnls.totalPnl.pnl.pnlUsd)}">
+                                ${this.formatUsdAmount(v2Pnls.totalPnl.pnl.pnlUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(v2Pnls.totalPnl.pnl.pnl)}" title="${v2Pnls.totalPnl.pnl.pnl}">
+                                ${this.formatPercentage(v2Pnls.totalPnl.pnl.pnl)}
+                            </div>
+                        </div>
+                    </div>
+            `;
+        }
+
+        // Diff table if diff is available
+        if (v2Pnls.diff || sortedPairsPnls.length > 0) {
+            html += `
                     <div class="pnl-diff-table">
                         <div class="pnl-diff-header">
                             <div class="pnl-diff-cell pnl-diff-header-cell"></div>
@@ -356,11 +383,11 @@ class PnLManager {
                             <div class="pnl-diff-cell pnl-diff-header-cell">diff</div>
                             <div class="pnl-diff-cell pnl-diff-header-cell">diff%</div>
                         </div>
-        `;
+            `;
 
-        // First show the overall V2 diff if present
-        if (v2Pnls.diff) {
-            html += `
+            // First show the overall V2 diff if present
+            if (v2Pnls.diff) {
+                html += `
                         <div class="pnl-diff-row">
                             <div class="pnl-diff-cell pnl-diff-name-cell">Diff:</div>
                             <div class="pnl-diff-cell pnl-diff-data-cell">
@@ -376,18 +403,18 @@ class PnLManager {
                                 ${this.formatPercentage(v2Pnls.diff.diffRel)}
                             </div>
                         </div>
-            `;
-        }
+                `;
+            }
 
-        // Then show each pair's diff
-        sortedPairsPnls.forEach((pairPnl, index) => {
-            if (pairPnl.pair && pairPnl.diff) {
-                const isFirstPair = index === 0;
-                const token0Symbol = pairPnl.pair.token0?.symbol || 'TOKEN0';
-                const token1Symbol = pairPnl.pair.token1?.symbol || 'TOKEN1';
-                const pairLabel = `${token0Symbol}/${token1Symbol}`;
-                
-                html += `
+            // Then show each pair's diff
+            sortedPairsPnls.forEach((pairPnl, index) => {
+                if (pairPnl.pair && pairPnl.diff) {
+                    const isFirstPair = index === 0;
+                    const token0Symbol = pairPnl.pair.token0?.symbol || 'TOKEN0';
+                    const token1Symbol = pairPnl.pair.token1?.symbol || 'TOKEN1';
+                    const pairLabel = `${token0Symbol}/${token1Symbol}`;
+                    
+                    html += `
                         <div class="pnl-diff-row ${isFirstPair ? 'pnl-token-separator-row' : ''}">
                             <div class="pnl-diff-cell pnl-diff-name-cell">${pairLabel}:</div>
                             <div class="pnl-diff-cell pnl-diff-data-cell">
@@ -403,12 +430,16 @@ class PnLManager {
                                 ${this.formatPercentage(pairPnl.diff.diffRel)}
                             </div>
                         </div>
-                `;
-            }
-        });
+                    `;
+                }
+            });
+
+            html += `
+                    </div>
+            `;
+        }
 
         html += `
-                    </div>
                 </div>
             </div>
         `;
@@ -421,6 +452,33 @@ class PnLManager {
             <div class="pnl-section">
                 <h3 class="pnl-section-title">V3 Pools</h3>
                 <div class="pnl-section-content">
+        `;
+
+        // PnL table if totalPnl is available
+        if (v3Pnls.totalPnl) {
+            html += `
+                    <div class="pnl-diff-table">
+                        <div class="pnl-diff-header">
+                            <div class="pnl-diff-cell pnl-diff-header-cell"></div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">PnL USD</div>
+                            <div class="pnl-diff-cell pnl-diff-header-cell">PnL %</div>
+                        </div>
+                        <div class="pnl-diff-row">
+                            <div class="pnl-diff-cell pnl-diff-name-cell">PnL:</div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(v3Pnls.totalPnl.pnl.pnlUsd)}">
+                                ${this.formatUsdAmount(v3Pnls.totalPnl.pnl.pnlUsd)}
+                            </div>
+                            <div class="pnl-diff-cell pnl-diff-data-cell ${this.getValueClass(v3Pnls.totalPnl.pnl.pnl)}" title="${v3Pnls.totalPnl.pnl.pnl}">
+                                ${this.formatPercentage(v3Pnls.totalPnl.pnl.pnl)}
+                            </div>
+                        </div>
+                    </div>
+            `;
+        }
+
+        // Diff table if diff is available
+        if (v3Pnls.diff) {
+            html += `
                     <div class="pnl-diff-table">
                         <div class="pnl-diff-header">
                             <div class="pnl-diff-cell pnl-diff-header-cell"></div>
@@ -429,11 +487,6 @@ class PnLManager {
                             <div class="pnl-diff-cell pnl-diff-header-cell">diff</div>
                             <div class="pnl-diff-cell pnl-diff-header-cell">diff%</div>
                         </div>
-        `;
-
-        // First show the overall V3 diff
-        if (v3Pnls.diff) {
-            html += `
                         <div class="pnl-diff-row">
                             <div class="pnl-diff-cell pnl-diff-name-cell">Diff:</div>
                             <div class="pnl-diff-cell pnl-diff-data-cell">
@@ -449,11 +502,11 @@ class PnLManager {
                                 ${this.formatPercentage(v3Pnls.diff.diffRel)}
                             </div>
                         </div>
+                    </div>
             `;
         }
 
         html += `
-                    </div>
                 </div>
         `;
 
