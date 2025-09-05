@@ -124,3 +124,36 @@ diff: diff - все как и в вышеперечисленных местах
 далее таблица для poolsPnls
 для каждого V3PoolPnl
 [резолвим пул по правилам из prompts/address-resolve.md]: diff - все как и в вышеперечисленных местах
+
+### Section debug info
+
+Отображаем отладочную информацию, которая приходит в ответе в следующих полях:
+```
+    # Starting block of the calculation period
+    fromBlock: Uint64!
+    # Starting block date
+    fromBlockDate: BlockDate @goField(forceResolver: true)
+
+    # Ending block of the calculation period
+    toBlock: Uint64!
+    # Ending block date
+    toBlockDate: BlockDate @goField(forceResolver: true)
+
+    # Minimum synchronized block in the data
+    minSyncBlock: Uint64!
+    # Minimum synchronized date
+    minSyncDate: DateEx!
+
+    # Maximum synchronized block in the data
+    maxSyncBlock: Uint64!
+    # Maximum synchronized date
+    maxSyncDate: DateEx!
+```
+вот порядок вывода
+
+minSyncBlock , minSyncDate.firstBlockForDate , minSyncDate.date
+fromBlock , fromBlockDate.firstBlockForDate , fromBlockDate.date
+toBlock , toBlockDate.firstBlockForDate , toBlockDate.date
+maxSyncBlock , maxSyncDate.firstBlockForDate , maxSyncDate.date
+
+
