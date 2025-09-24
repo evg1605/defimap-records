@@ -715,6 +715,7 @@ class RecordsManager {
         const token0Amount = this.formatTokenAmount(record.token0Amount);
         const token1Amount = this.formatTokenAmount(record.token1Amount);
         const ltDelta = record.ltDelta || '0';
+        const ltBalance = record.ltBalance || '0';
         
         // Calculate total USD values
         const token0DeltaUsd = record.token0Delta && record.token0Delta.amount ?
@@ -777,17 +778,17 @@ class RecordsManager {
                                 <tr>
                                     <td class="delta-label">total</td>
                                     <td class="token-column">
-                                        <a href="https://etherscan.io/address/${token0.addr}" target="_blank" rel="noopener noreferrer" class="token-link">${token0Symbol}</a>: 
-                                        <span class="amount">${token0Amount.amount}</span> 
+                                        <a href="https://etherscan.io/address/${token0.addr}" target="_blank" rel="noopener noreferrer" class="token-link">${token0Symbol}</a>:
+                                        <span class="amount">${token0Amount.amount}</span>
                                         <span class="amount-usd">(${token0Amount.amountInUsd} USD)</span>
                                     </td>
                                     <td class="token-column">
-                                        <a href="https://etherscan.io/address/${token1.addr}" target="_blank" rel="noopener noreferrer" class="token-link">${token1Symbol}</a>: 
-                                        <span class="amount">${token1Amount.amount}</span> 
+                                        <a href="https://etherscan.io/address/${token1.addr}" target="_blank" rel="noopener noreferrer" class="token-link">${token1Symbol}</a>:
+                                        <span class="amount">${token1Amount.amount}</span>
                                         <span class="amount-usd">(${token1Amount.amountInUsd} USD)</span>
                                     </td>
                                     <td class="total-column">
-                                        = <span class="amount-usd">(${totalAmountUsd} USD)</span>
+                                        = <span class="amount">${ltBalance}</span> <span class="amount-usd">(${totalAmountUsd} USD)</span>
                                     </td>
                                 </tr>
                             </table>
