@@ -552,12 +552,40 @@ const queries = {
                         pair {
                             addr
                             token0 {
+                                addr
                                 symbol
                                 name
                             }
                             token1 {
+                                addr
                                 symbol
                                 name
+                            }
+                        }
+                        token0UsdRate {
+                            tokenAddr
+                            token {
+                                addr
+                                symbol
+                                name
+                            }
+                            rate {
+                                date
+                                unixDate
+                                rate
+                            }
+                        }
+                        token1UsdRate {
+                            tokenAddr
+                            token {
+                                addr
+                                symbol
+                                name
+                            }
+                            rate {
+                                date
+                                unixDate
+                                rate
                             }
                         }
                     }
